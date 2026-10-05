@@ -1,0 +1,26 @@
+# Anotações pessoais
+infos.txt
+
+# Dependências
+node_modules/
+
+# Artefatos do Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+
+# Arquivos temporários do SQLite (gerados em tempo de execução)
+*.sqlite-shm
+*.sqlite-wal
+*.test.sqlite
+
+# Lixo de sistema operacional
+__MACOSX/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
