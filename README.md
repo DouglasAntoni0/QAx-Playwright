@@ -80,7 +80,8 @@ QAx-playwright-express/
     │   └── web/                  # Front-end do gerenciador de tarefas (porta 8080)
     │
     ├── tests/                    # 🎭 Suíte de testes Playwright
-    │   └── home.spec.ts
+    │   ├── home.spec.ts          # Smoke test da home
+    │   └── tasks.spec.ts         # Cenários de tarefas
     │
     ├── playwright.config.ts      # Configuração do Playwright
     ├── tsconfig.json             # Configuração do TypeScript
@@ -162,7 +163,7 @@ npx playwright show-report
 | # | Funcionalidade | Cenário | Status |
 | --- | --- | --- | --- |
 | 1 | Home | Web app deve estar online (valida o título da página) | ✅ Implementado |
-| 2 | Cadastro de tarefas | Deve cadastrar uma nova tarefa | 🔜 Em breve |
+| 2 | Cadastro de tarefas | Deve cadastrar uma nova tarefa | 🚧 Em andamento |
 | 3 | Cadastro de tarefas | Não deve permitir tarefa duplicada | 🔜 Em breve |
 | 4 | Cadastro de tarefas | Campo obrigatório | 🔜 Em breve |
 | 5 | Atualização | Deve concluir uma tarefa | 🔜 Em breve |
