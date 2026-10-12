@@ -2,246 +2,225 @@
 
 # 🎭 QAx Playwright — Automação de Testes E2E
 
-**Projeto de automação de testes end-to-end com Playwright + TypeScript, desenvolvido por [Douglas Antonio](https://github.com/DouglasAntoni0)**
+**Projeto de estudo em automação de testes com Playwright e TypeScript, desenvolvido por [Douglas Antonio](https://github.com/DouglasAntoni0).**
 
 [![Playwright](https://img.shields.io/badge/Playwright-1.63-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-22-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.17-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![Status](https://img.shields.io/badge/status-em%20evolução-orange?style=for-the-badge)](#-roadmap)
+[![Status](https://img.shields.io/badge/status-em%20evolução-orange?style=for-the-badge)](#roadmap)
 
 </div>
 
----
+## Sobre o projeto
 
-## 📌 Sobre o projeto
+Este repositório registra minha evolução prática em **Qualidade de Software e Automação de Testes**, a partir do curso **[Playwright eXpress](https://www.udemy.com/course/playwright-express/)**, da Udemy, ministrado por **Fernando Papito (QAx)**.
 
-Este repositório documenta a minha jornada na construção de uma **suíte de testes automatizados de ponta a ponta (E2E)** utilizando o **[Playwright](https://playwright.dev/)**, um dos frameworks de automação mais modernos e requisitados do mercado de Qualidade de Software.
+Estou construindo uma suíte de testes para o **Mark L**, um gerenciador de tarefas com interface web, API REST e banco SQLite. O projeto reúne escrita de cenários, preparação de dados pela API, interação com o navegador e validação do comportamento esperado.
 
-O alvo dos testes é o **Mark L**, uma aplicação real de gerenciamento de tarefas (*to-do list*) composta por um **front-end web** e uma **API REST** em Node.js/Express com persistência em SQLite. Ou seja: não é um "hello world" — é um sistema completo, rodando localmente, sobre o qual eu escrevo, executo e evoluo testes como faria em um time de produto de verdade.
+Meu trabalho aqui envolve compreender o fluxo completo da aplicação: organizar o ambiente, escolher os elementos da interface, controlar os dados usados nos testes, investigar falhas e confirmar os resultados. Cada evolução do repositório representa a aplicação prática de um novo aprendizado.
 
-> 💡 **Projeto vivo:** este repositório é atualizado continuamente. A cada novo módulo estudado, novos cenários, padrões de projeto e boas práticas são incorporados — e o código existente é refatorado para refletir o que aprendi.
+> **Este é um projeto de estudo em desenvolvimento contínuo. Conforme avanço no curso e nos estudos, o código vai melhorando: novos cenários são adicionados, a organização evolui e os testes existentes são refinados. O histórico de commits registra esse processo.**
 
-### 🎯 Objetivos
+## Competências aplicadas
 
-- Dominar o **Playwright Test Runner** com **TypeScript** em modo `strict`.
-- Construir testes **confiáveis, legíveis e de fácil manutenção**.
-- Aplicar boas práticas de mercado: localizadores resilientes, isolamento de testes, massa de dados controlada e padrões como **Page Objects** e **Fixtures**.
-- Validar a aplicação em **múltiplas camadas** (UI e API).
-- Preparar a suíte para rodar em **pipelines de CI/CD**.
-
----
-
-## 🧠 O que este projeto demonstra
-
-| Competência | Como aparece aqui |
+| Competência | Evidência no projeto |
 | --- | --- |
-| **Automação E2E** | Testes de interface com Playwright interagindo com uma aplicação real |
-| **TypeScript** | Tipagem estrita (`strict: true`) em toda a suíte de testes |
-| **Arquitetura de testes** | Separação clara entre aplicações sob teste (`apps/`) e a suíte (`tests/`) |
-| **Configuração profissional** | `playwright.config.ts` com execução paralela, retries em CI, `forbidOnly` e trace viewer |
-| **Ambiente local completo** | API + Web + banco de dados rodando lado a lado para testes realistas |
-| **Debug e investigação** | Uso do **UI Mode** e do **Trace Viewer** para analisar falhas |
-| **Pensamento de QA** | Foco em cenários de negócio, validações e prevenção de regressões |
-| **Aprendizado contínuo** | Histórico de commits mostrando a evolução incremental do código |
+| **Automação E2E com Playwright** | Cenários executados em Chromium contra a aplicação local, com interação e validação da interface |
+| **Integração entre API e UI** | Limpeza da tarefa pela API antes do cadastro pelo navegador |
+| **Controle da massa de testes** | Exclusão pelo nome da tarefa e verificação do status `204` antes de continuar o cenário |
+| **Validação do comportamento esperado** | Verificação do título da página e da visibilidade da tarefa cadastrada |
+| **Investigação de falhas** | Diagnóstico da porta incorreta do helper e da incompatibilidade entre o Node.js e o módulo nativo SQLite |
+| **Organização do projeto** | Aplicações em `apps/`, cenários em `tests/` e configuração do runner em arquivo próprio |
+| **TypeScript** | Cenários escritos em TypeScript, com configuração `strict: true` |
+| **Evidências de execução** | Relatório HTML do Playwright e trace configurado para a primeira tentativa de retry |
 
----
+Essas entregas mostram minha evolução na construção de testes que verificam resultados, cuidam dos dados utilizados e tornam as falhas mais fáceis de investigar. O foco dos estudos é desenvolver uma base técnica consistente para ampliar a automação com segurança e clareza.
 
-## 🛠️ Stack tecnológica
+## Validação realizada
 
-### Suíte de testes
-- **[Playwright Test](https://playwright.dev/)** `^1.63` — framework de automação E2E
-- **[TypeScript](https://www.typescriptlang.org/)** — linguagem da suíte, em modo estrito
-- **[Node.js](https://nodejs.org/)** `22` — runtime (versão fixada em `.node-version`)
+Em **12/10/2026**, a suíte foi executada localmente com a API e o front-end ativos:
 
-### Aplicação sob teste (Mark L)
-- **API:** Node.js · Express · TypeORM · SQLite (`better-sqlite3`) · Yup · UUID
-- **Web:** SPA compilada servida via `http-server`
+- **2 cenários aprovados em cada uma de duas execuções consecutivas**, sem falhas nessas execuções.
+- A segunda execução confirmou o funcionamento da limpeza quando a tarefa do teste já estava cadastrada.
+- Uma consulta adicional a `GET /tasks` retornou `200` e confirmou uma única tarefa com o nome usado no teste, com `is_done: false`.
+- Ambiente utilizado: **Chromium**, **Node.js 22.23.3 para o runner** e **Node.js 18.20.8 para a API**.
 
----
+Esse resultado corresponde aos dois cenários implementados na suíte Playwright. A ampliação da cobertura está descrita no roadmap.
 
-## 🗂️ Estrutura do repositório
+## Cenários implementados
+
+| Arquivo | Cenário | Verificações |
+| --- | --- | --- |
+| [`home.spec.ts`](playwright-mark/tests/home.spec.ts) | Web app deve estar online | Abre a interface e verifica o título `Gerencie suas tarefas com Mark L` |
+| [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | Deve poder cadastrar uma nova tarefa | Limpa a tarefa pela API, exige `204`, preenche o nome, clica em `Create` e verifica a tarefa na lista |
+
+O cadastro utiliza o nome fixo `Ler um livro de TypeScript`. A limpeza acontece antes de cada execução desse cenário. O Faker já está instalado como dependência de desenvolvimento; a geração de nomes dinâmicos faz parte dos próximos estudos.
+
+## Stack e ambiente
+
+| Componente | Tecnologias | Endereço local |
+| --- | --- | --- |
+| Suíte de testes | Playwright Test `^1.63.0`, TypeScript e Faker `^10.6.0` | Runner na pasta `playwright-mark/` |
+| Front-end Mark L | SPA compilada, servida com `http-server` | `http://localhost:8080` |
+| API Mark L | Node.js, Express, TypeORM, Yup e UUID | `http://localhost:3333/tasks` |
+| Persistência | SQLite com `better-sqlite3` `8.2.0` | Banco local da aplicação |
+
+**As portas têm funções diferentes:** a navegação da interface usa `8080`; as chamadas de API, incluindo `/helper/tasks`, usam `3333`.
+
+### Versões do Node.js
+
+- **API:** validada com Node.js **18.20.8**, compatível com o módulo SQLite instalado neste ambiente.
+- **Front-end e testes:** validados com Node.js **22.23.3**. O arquivo [`playwright-mark/.node-version`](playwright-mark/.node-version) indica a versão principal `22`.
+
+O SQLite utiliza um módulo nativo. Dependências instaladas ou compiladas com uma versão do Node.js podem falhar ao iniciar com outra versão. Durante a investigação local, executar a API com Node.js 26 causou `ERR_DLOPEN_FAILED`; selecionar Node.js 18 resolveu a inicialização com as dependências existentes.
+
+## Estrutura do repositório
 
 ```text
-QAx-playwright-express/
+QAx-Playwright/
+├── README.md
+├── Insomnia_markL.json          # Coleção de requisições para explorar a API
 └── playwright-mark/
-    ├── apps/                     # Aplicações sob teste (Mark L)
-    │   ├── api/                  # API REST — Express + TypeORM + SQLite (porta 3333)
+    ├── apps/
+    │   ├── api/                # API e banco SQLite — porta 3333
     │   │   ├── src/
-    │   │   │   ├── controllers/  # Regras de entrada das rotas
-    │   │   │   ├── database/     # Conexão, migrations e banco SQLite
-    │   │   │   ├── errors/       # Tratamento de erros da aplicação
-    │   │   │   ├── models/       # Entidades (Task)
-    │   │   │   ├── repositories/ # Acesso a dados
-    │   │   │   ├── routes.js     # Definição dos endpoints
-    │   │   │   └── server.js     # Bootstrap do servidor
-    │   │   └── ormconfig.json
-    │   └── web/                  # Front-end do gerenciador de tarefas (porta 8080)
-    │
-    ├── tests/                    # 🎭 Suíte de testes Playwright
-    │   ├── home.spec.ts          # Smoke test da home
-    │   └── tasks.spec.ts         # Cenários de tarefas
-    │
-    ├── playwright.config.ts      # Configuração do Playwright
-    ├── tsconfig.json             # Configuração do TypeScript
-    ├── .node-version             # Versão do Node.js utilizada
-    └── package.json
+    │   │   │   ├── controllers/
+    │   │   │   ├── database/
+    │   │   │   ├── models/
+    │   │   │   ├── repositories/
+    │   │   │   ├── routes.js
+    │   │   │   └── server.js
+    │   │   └── package.json
+    │   └── web/                # Interface compilada — porta 8080
+    ├── tests/
+    │   ├── home.spec.ts
+    │   └── tasks.spec.ts
+    ├── .node-version
+    ├── package.json
+    ├── playwright.config.ts
+    └── tsconfig.json
 ```
 
----
+## Como executar
 
-## 🌐 Endpoints da API
+Os exemplos abaixo usam PowerShell e `fnm` para selecionar a versão do Node.js em cada terminal. Também é possível utilizar outro gerenciador, mantendo as versões correspondentes. É necessário ter Git instalado.
 
-| Método | Rota | Descrição |
-| --- | --- | --- |
-| `POST` | `/tasks` | Cria uma nova tarefa |
-| `GET` | `/tasks` | Lista as tarefas |
-| `PUT` | `/tasks/:id` | Atualiza uma tarefa (ex.: marcar como concluída) |
-| `DELETE` | `/tasks/:id` | Remove uma tarefa |
-| `DELETE` | `/helper/tasks` | 🧪 *Helper de testes* — remove tarefa(s) por nome |
-| `DELETE` | `/helper/tasks/:task_name` | 🧪 *Helper de testes* — remove tarefa pelo nome na URL |
+### 1. Clonar o projeto
 
-> ⚠️ As rotas `/helper/*` existem **apenas fora do ambiente de produção** (`NODE_ENV !== 'production'`) e servem para **preparar e limpar a massa de dados** antes/depois dos testes — uma prática essencial para garantir testes independentes e repetíveis.
-
-**Modelo `Task`:** `id` (UUID) · `name` (string) · `is_done` (boolean) · `created_at` (data)
-
----
-
-## 🚀 Como executar
-
-### Pré-requisitos
-
-- [Node.js 22](https://nodejs.org/) (ou gerenciador como `fnm`/`nvm` lendo o `.node-version`)
-- [Git](https://git-scm.com/)
-
-### 1. Clonar o repositório
-
-```bash
+```powershell
 git clone https://github.com/DouglasAntoni0/QAx-Playwright.git
-cd QAx-Playwright/playwright-mark
+cd QAx-Playwright
 ```
 
-### 2. Subir a API (terminal 1)
+### 2. Iniciar a API — terminal 1
 
-```bash
-cd apps/api
-npm install
-npm run db:init   # opcional: executa as migrations caso precise recriar o banco
-npm run dev       # http://localhost:3333
+Partindo da raiz do repositório:
+
+```powershell
+cd playwright-mark/apps/api
+fnm install 18.20.8
+fnm use 18.20.8
+node -v
+npm ci
+npm run dev
 ```
 
-### 3. Subir o front-end (terminal 2)
+Deixe esse terminal aberto. Para conferir a API, acesse `http://localhost:3333/tasks`: a resposta deve ser uma lista JSON. A raiz `http://localhost:3333/` retorna `Cannot GET /`, pois não há uma rota definida para esse caminho.
 
-```bash
-cd apps/web
-npm install
-npm run dev       # http://localhost:8080
+Se precisar criar as tabelas em um banco novo, execute `npm run db:init` antes de iniciar a API.
+
+### 3. Iniciar a interface — terminal 2
+
+Em outro terminal, partindo da raiz do repositório:
+
+```powershell
+cd playwright-mark/apps/web
+fnm install 22.23.3
+fnm use 22.23.3
+npm ci
+npm run dev
 ```
 
-### 4. Instalar e executar os testes (terminal 3)
+Deixe esse terminal aberto e acesse `http://localhost:8080`.
 
-```bash
-# na pasta playwright-mark/
-npm install
+### 4. Executar os testes — terminal 3
+
+Em outro terminal, partindo da raiz do repositório:
+
+```powershell
+cd playwright-mark
+fnm use 22.23.3
+npm ci
 npx playwright install chromium
-
-npm test          # execução headless
-npm run test:ui   # modo interativo (UI Mode) — ótimo para debug
+npm test
 ```
 
-### 5. Ver o relatório
+Outras formas de executar e consultar as evidências:
 
-```bash
+```powershell
+npm run test:ui
+npx playwright test tests/tasks.spec.ts
 npx playwright show-report
 ```
 
----
+O Playwright gera o relatório em `playwright-mark/playwright-report/` e os resultados em `playwright-mark/test-results/`. Esses diretórios são ignorados pelo Git.
 
-## 🧪 Cenários de teste
+### Depois de reiniciar o computador
 
-| # | Funcionalidade | Cenário | Status |
-| --- | --- | --- | --- |
-| 1 | Home | Web app deve estar online (valida o título da página) | ✅ Implementado |
-| 2 | Cadastro de tarefas | Deve cadastrar uma nova tarefa | 🚧 Em andamento |
-| 3 | Cadastro de tarefas | Não deve permitir tarefa duplicada | 🔜 Em breve |
-| 4 | Cadastro de tarefas | Campo obrigatório | 🔜 Em breve |
-| 5 | Atualização | Deve concluir uma tarefa | 🔜 Em breve |
-| 6 | Exclusão | Deve excluir uma tarefa | 🔜 Em breve |
+Se as dependências já estiverem instaladas, selecione novamente a versão do Node.js em cada terminal e execute `npm run dev` nas pastas da API e da interface. Com os dois serviços ativos, execute `npm test` na pasta `playwright-mark/`. O início dos serviços ainda é manual.
 
-```ts
-// tests/home.spec.ts
-import { test, expect } from '@playwright/test';
+## Rotas disponíveis na API
 
-test('webapp deve estar online', async ({ page }) => {
-    await page.goto('http://localhost:8080');
-    await expect(page).toHaveTitle('Gerencie suas tarefas com Mark L');
-});
-```
+| Método | Rota | Função |
+| --- | --- | --- |
+| `GET` | `/tasks` | Lista tarefas |
+| `POST` | `/tasks` | Cadastra uma tarefa |
+| `PUT` | `/tasks/:id` | Atualiza o estado de conclusão |
+| `DELETE` | `/tasks/:id` | Exclui uma tarefa pelo ID |
+| `DELETE` | `/helper/tasks` | Exclui pelo nome informado no corpo JSON |
+| `DELETE` | `/helper/tasks/:task_name` | Exclui pelo nome informado na URL |
 
----
+As rotas `/helper/*` são habilitadas quando `NODE_ENV !== 'production'`. O cenário de cadastro usa a rota com o nome na URL, codificado com `encodeURIComponent`, e valida o status da resposta antes de interagir com a interface.
 
-## ⚙️ Destaques da configuração
+A coleção [`Insomnia_markL.json`](Insomnia_markL.json) contém requisições de cadastro, listagem, atualização e exclusão. Os IDs das requisições de atualização e exclusão devem ser substituídos pelos IDs de tarefas existentes.
 
-O arquivo [`playwright.config.ts`](playwright-mark/playwright.config.ts) já está preparado para cenários reais de pipeline:
+## Configuração atual do Playwright
 
-- **`fullyParallel: true`** — testes executam em paralelo, reduzindo o tempo total.
-- **`forbidOnly: !!process.env.CI`** — impede que um `test.only` esquecido quebre a cobertura no CI.
-- **`retries`** — 2 tentativas automáticas no CI para mitigar instabilidades de ambiente.
-- **`trace: 'on-first-retry'`** — gera um *trace* completo (DOM, rede, console, screenshots) quando um teste falha, facilitando a análise da causa raiz.
-- **Reporter HTML** — relatório visual e navegável dos resultados.
+O arquivo [`playwright.config.ts`](playwright-mark/playwright.config.ts) configura:
 
----
+- Execução em **Chromium**.
+- Paralelismo com `fullyParallel: true`.
+- Relatório HTML.
+- Trace na primeira tentativa de retry.
+- Em ambiente `CI`: um worker, duas tentativas adicionais e bloqueio de `test.only`.
 
-## 🗺️ Roadmap
+As URLs estão escritas diretamente nos testes. A inicialização automática dos serviços, a execução em outros navegadores e um workflow no GitHub Actions são melhorias previstas.
 
-- [x] Setup do projeto com Playwright + TypeScript
-- [x] Ambiente local com API, Web e banco de dados
-- [x] Primeiro teste E2E (smoke test da home)
-- [ ] Cenários de cadastro, conclusão e exclusão de tarefas
-- [ ] Testes de API com o `request` context do Playwright
-- [ ] Massa de dados controlada via helpers da API
-- [ ] Padrão **Page Object Model** / **Fixtures** customizadas
-- [ ] `baseURL` e variáveis de ambiente (`.env`)
-- [ ] Execução em múltiplos navegadores (Chromium, Firefox, WebKit)
-- [ ] Pipeline de **CI com GitHub Actions** e publicação do relatório
-- [ ] Dados dinâmicos com Faker
+## Roadmap
 
----
+- [x] Organizar o projeto com Playwright e TypeScript.
+- [x] Executar o Mark L com interface, API e banco local.
+- [x] Implementar e validar o smoke test da página inicial.
+- [x] Implementar e validar o cadastro de uma tarefa.
+- [x] Preparar a massa pela API e verificar o retorno da limpeza.
+- [x] Confirmar o cadastro em duas execuções consecutivas.
+- [ ] Validar tarefa duplicada e campo obrigatório.
+- [ ] Automatizar conclusão e exclusão pela interface.
+- [ ] Gerar massa dinâmica com Faker.
+- [ ] Ampliar os cenários de API.
+- [ ] Evoluir a organização com Page Objects e fixtures.
+- [ ] Centralizar URLs com `baseURL` e variáveis de ambiente.
+- [ ] Automatizar o início dos serviços pelo runner.
+- [ ] Executar em Firefox, WebKit e dispositivos móveis.
+- [ ] Criar uma pipeline no GitHub Actions com publicação de evidências.
 
-## 📚 Referência de estudo
+## Referência e autoria
 
-Projeto desenvolvido a partir dos estudos do curso **[Playwright Express](https://www.udemy.com/course/playwright-express/)** (Udemy), do instrutor **Fernando Papito** (QAx). A aplicação **Mark L** utilizada como sistema sob teste é material do curso; a suíte de testes, a organização do repositório e as evoluções são de minha autoria e refletem o meu aprendizado prático.
+**Curso:** [Playwright eXpress — Udemy](https://www.udemy.com/course/playwright-express/), de Fernando Papito (QAx).
 
----
+A aplicação **Mark L** é material de apoio do curso. A implementação e a evolução da suíte neste repositório são desenvolvidas por **Douglas Antonio**, acompanhando os exercícios e aplicando os conhecimentos adquiridos nos estudos.
 
-## 👨‍💻 Autor
+Este projeto documenta minha dedicação à prática de automação, à investigação de problemas e à melhoria contínua do código. Conforme avanço, cada etapa ganha novos cenários, verificações e formas de organizar os testes.
 
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/DouglasAntoni0">
-        <img src="https://github.com/DouglasAntoni0.png" width="110px;" alt="Foto de Douglas Antonio"/><br>
-        <sub><b>Douglas Antonio</b></sub>
-      </a>
-    </td>
-    <td>
-      Profissional apaixonado por <b>Qualidade de Software</b> e <b>Automação de Testes</b>.<br>
-      Acredito que qualidade não é uma etapa — é parte da cultura de desenvolvimento.<br>
-      Estou constantemente estudando e aplicando ferramentas modernas como o Playwright para entregar
-      software mais confiável, com feedback rápido e menos regressões.<br><br>
-      📫 <a href="mailto:douglas.doug1235@gmail.com">douglas.doug1235@gmail.com</a> ·
-      🐙 <a href="https://github.com/DouglasAntoni0">github.com/DouglasAntoni0</a>
-    </td>
-  </tr>
-</table>
-
----
-
-<div align="center">
-
-⭐ Se este projeto te ajudou ou chamou sua atenção, deixe uma estrela!
-
-*Feito com 💚 e muitos testes por Douglas Antonio*
-
-</div>
+**Autor:** [Douglas Antonio](https://github.com/DouglasAntoni0) · [douglas.doug1235@gmail.com](mailto:douglas.doug1235@gmail.com)
