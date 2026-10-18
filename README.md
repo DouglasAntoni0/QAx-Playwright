@@ -1,63 +1,146 @@
 <div align="center">
 
-# 🎭 QAx Playwright — Arquitetura & Automação de Testes E2E
+# 🎭 QAx Playwright — Automação de Testes E2E com Arquitetura Profissional
 
-**Suíte de automação de testes End-to-End (UI + API) construída com Playwright e TypeScript por [Douglas Antonio](https://github.com/DouglasAntoni0).**
+**Suíte de testes End-to-End (UI + API) em Playwright e TypeScript, projetada e evoluída por [Douglas Antonio](https://github.com/DouglasAntoni0).**
+
+*Testes rápidos, isolados, legíveis e prontos para escalar, do jeito que times de engenharia de verdade trabalham.*
 
 [![Playwright](https://img.shields.io/badge/Playwright-1.63-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2018-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.17-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![Tests](https://img.shields.io/badge/Testes-3%20Passing%20(1.7s)-brightgreen?style=for-the-badge)](#validação-e-resultados-de-execução)
+
+[![Tests](https://img.shields.io/badge/Testes-4%20Passing-brightgreen?style=for-the-badge&logo=checkmarx&logoColor=white)](#-resultados-de-execução)
+[![Tempo](https://img.shields.io/badge/Execução-1.9s-blueviolet?style=for-the-badge&logo=speedtest&logoColor=white)](#-resultados-de-execução)
+[![Flaky](https://img.shields.io/badge/Flaky-0%25-success?style=for-the-badge)](#-resultados-de-execução)
+[![Pattern](https://img.shields.io/badge/Pattern-Page%20Object%20Model-orange?style=for-the-badge)](#-arquitetura-da-suíte)
 
 </div>
 
 ---
 
-## 🎯 Visão Geral e Propósito
+## 📌 Resumo em 30 segundos
 
-Este repositório apresenta meu trabalho prático em **Engenharia de Qualidade de Software (QA) e Automação de Testes E2E**, desenvolvido ao longo do curso **[Playwright eXpress](https://www.udemy.com/course/playwright-express/)** (QAx / Fernando Papito) e expandido com foco em **boas práticas de arquitetura, código limpo, tipagem forte e confiabilidade de execução**.
+> **Quem sou:** Douglas Antonio, QA Automation Engineer focado em Playwright, TypeScript e testes E2E & API.
+>
+> **O que este repositório prova:** que eu sei **estruturar uma suíte de automação do zero**, aplicando os mesmos padrões usados em projetos profissionais: **Page Object Model**, **tipagem estrita**, **preparação de massa via API**, **testes 100% independentes** e **execução paralela sem flakiness**.
 
-Mais do que reproduzir exercícios, meu objetivo neste projeto é **construir uma suíte de testes com padrão profissional de mercado** sobre a aplicação full-stack **Mark L** (gerenciador de tarefas com SPA Web, API REST em Express/TypeORM e banco SQLite). Cada commit reflete decisões técnicas voltadas para **testes rápidos, independentes, idempotentes e de fácil manutenção**.
-
-> 💡 **Evolução contínua:** Este projeto é atualizado a cada avanço nos estudos. O código passa constantemente por refatorações para aplicar padrões de projeto (*Design Patterns*), isolamento de responsabilidades (*DRY*) e automação híbrida (*API + UI*).
-
----
-
-## 🏆 Diferenciais Técnicos e Competências Aplicadas por Mim
-
-| Competência de Engenharia de QA | Como eu apliquei na prática neste projeto |
+| 📊 Indicador | Resultado |
 | --- | --- |
-| **Estratégia Híbrida (API + UI)** | Em vez de depender apenas da interface (lenta e propensa a *flakiness*) para preparar cenários, utilizo o `APIRequestContext` do Playwright para limpar e pré-cadastrar dados diretamente na API REST antes de validar o comportamento no navegador. |
-| **Clean Code, DRY e Modularização** | Refatorei chamadas HTTP repetidas nos testes para uma camada dedicada de suporte ([`tests/support/helpers.ts`](playwright-mark/tests/support/helpers.ts)), mantendo os arquivos `.spec.ts` enxutos, legíveis e focados na regra de negócio. |
-| **Modelagem e Tipagem Estrita em TypeScript** | Criei contratos de dados fortemente tipados ([`TaskModel`](playwright-mark/tests/fixtures/task.model.ts)) com `strict: true`, prevenindo erros em tempo de desenvolvimento e garantindo *autocomplete* seguro em toda a suíte. |
-| **Independência e Idempotência de Testes** | Cada cenário controla sua própria massa de dados (`deleteTaskByHelper` + `postTask`), permitindo execução **100% paralela (`3 workers`)** em apenas **1.7s**, sem efeito colateral entre testes ou falhas por sujeira no banco. |
-| **Cobertura de Fluxos Positivos e Regras de Negócio** | Validação tanto do *happy path* (criação e renderização de tarefas no DOM) quanto de fluxos de exceção (bloqueio de tarefa duplicada e validação de componente modal **SweetAlert2**). |
-| **Troubleshooting de Ambiente e Infraestrutura** | Diagnóstico e resolução de incompatibilidade binária (`ERR_DLOPEN_FAILED`) do módulo nativo `better-sqlite3` em versões recentes do Node.js, estruturando o ambiente com gerenciamento multi-versão (`Node 18.20.8` na API e `Node 22.23.3` no runner). |
-| **Observabilidade e Diagnóstico de Falhas** | Configuração de **HTML Reporter**, **UI Mode** e **Trace Viewer** (`on-first-retry`) para inspeção completa de rede, DOM, *snapshots* e console. |
+| Cenários automatizados | **4** (smoke, happy path, regra de negócio e validação de formulário) |
+| Tempo total da suíte | **~1.9s** com **4 workers em paralelo** |
+| Taxa de flakiness | **0%** em execuções consecutivas |
+| Dependência entre testes | **Nenhuma**: cada teste prepara e limpa a própria massa |
+| Camadas de abstração | **Page Objects** (UI) + **Helpers de API** + **Models tipados** |
 
 ---
 
-## ✨ Destaques da Arquitetura da Suíte
+## 🎯 Visão Geral
 
-### 1. Contratos de Dados Tipados (`tests/fixtures/task.model.ts`)
-Para evitar objetos literais soltos e garantir consistência entre o payload da API e os dados preenchidos na UI, estruturei a interface `TaskModel`:
+Este repositório reúne meu trabalho prático em **Engenharia de Qualidade de Software e Automação de Testes E2E**, desenvolvido a partir do curso **[Playwright eXpress](https://www.udemy.com/course/playwright-express/)** (QAx / Fernando Papito).
+
+Eu não me limitei a reproduzir exercícios. A cada aula, **refatorei, documentei e elevei o padrão do código**, tratando o projeto como uma suíte real de produção sobre a aplicação full-stack **Mark L**: um gerenciador de tarefas com SPA Web, API REST em Express/TypeORM e banco SQLite.
+
+> 💡 **Evolução contínua:** cada commit representa um passo técnico consciente, saindo de testes procedurais para uma arquitetura em camadas com **Design Patterns**, **DRY** e **automação híbrida (API + UI)**.
+
+---
+
+## 🏆 Competências que Eu Demonstro Neste Projeto
+
+| Competência | Como eu apliquei na prática |
+| --- | --- |
+| 🧱 **Page Object Model (POM)** | Encapsulei seletores e ações da tela de tarefas na classe [`TasksPage`](playwright-mark/tests/support/pages/tasks/index.ts). Se a UI mudar, a correção acontece **em um único lugar**, e os testes continuam intactos. |
+| ⚡ **Estratégia Híbrida (API + UI)** | Uso o `APIRequestContext` do Playwright para **limpar e pré-cadastrar dados direto na API REST**, evitando passos lentos e frágeis pela interface só para montar cenário. |
+| 🧼 **Clean Code & DRY** | Chamadas HTTP repetidas foram extraídas para [`helpers.ts`](playwright-mark/tests/support/helpers.ts). Os arquivos `.spec.ts` ficaram enxutos e focados **apenas na regra de negócio**. |
+| 🔒 **Tipagem Estrita em TypeScript** | Contratos de dados com [`TaskModel`](playwright-mark/tests/fixtures/task.model.ts) e `strict: true`, garantindo *autocomplete* seguro e erros detectados **antes** da execução. |
+| 🔁 **Independência e Idempotência** | Cada cenário controla a própria massa (`deleteTaskByHelper` + `postTask`). Resultado: **execução 100% paralela**, sem efeito colateral e sem "sujeira" no banco. |
+| ✅ **Cobertura além do Happy Path** | Valido o fluxo feliz, a **regra de negócio de duplicidade** (modal SweetAlert2) e a **validação nativa de formulário HTML5** (`validationMessage`), lendo propriedades do DOM via `evaluate()`. |
+| 🛠️ **Troubleshooting de Ambiente** | Diagnostiquei e resolvi a falha `ERR_DLOPEN_FAILED` do módulo nativo `better-sqlite3` isolando versões do Node.js por camada (`18.20.8` na API e `22.23.3` no runner). |
+| 🔍 **Observabilidade** | **HTML Reporter**, **UI Mode** e **Trace Viewer** (`on-first-retry`) configurados para inspeção de rede, DOM, *snapshots* e console. |
+
+---
+
+## 🧭 Arquitetura da Suíte
+
+```mermaid
+flowchart LR
+    subgraph Specs["🧪 Specs (regra de negócio)"]
+        H[home.spec.ts]
+        T[tasks.spec.ts]
+    end
+
+    subgraph Support["🧱 Camada de Suporte"]
+        PO["TasksPage<br/>(Page Object)"]
+        HP["helpers.ts<br/>(API Helpers)"]
+        M["TaskModel<br/>(Contrato tipado)"]
+    end
+
+    subgraph SUT["🎯 Sistema sob Teste"]
+        WEB["Web SPA<br/>:8080"]
+        API["API REST<br/>:3333"]
+        DB[("SQLite")]
+    end
+
+    T --> PO
+    T --> HP
+    T -.-> M
+    PO -.-> M
+    HP -.-> M
+    H --> WEB
+    PO -->|"UI: fill, click, expect"| WEB
+    HP -->|"HTTP: DELETE / POST"| API
+    WEB --> API
+    API --> DB
+```
+
+**Princípio central:** os testes descrevem **o quê** está sendo validado; os Page Objects e Helpers resolvem **como** interagir com a UI e com a API.
+
+---
+
+## ✨ Destaques do Código
+
+### 1. Page Object Model: [`tests/support/pages/tasks/index.ts`](playwright-mark/tests/support/pages/tasks/index.ts)
+
+Toda a interação com a tela de tarefas fica centralizada em uma classe com locators `readonly` e métodos de ação e asserção com nomes expressivos:
 
 ```ts
-export interface TaskModel {
-    name: string
-    is_done: boolean
+export class TasksPage {
+    readonly page: Page
+    readonly inputTaskName: Locator
+
+    constructor(page: Page) {
+        this.page = page
+        this.inputTaskName = page.locator('input[class*=InputNewTask]')
+    }
+
+    async go() {
+        await this.page.goto('http://localhost:8080')
+    }
+
+    async create(task: TaskModel) {
+        await this.inputTaskName.fill(task.name)
+        await this.page.click('css=button >> text=Create')
+    }
+
+    async shouldHaveText(taskName: string) {
+        const target = this.page.locator(`css=.task-item p >> text=${taskName}`)
+        await expect(target).toBeVisible()
+    }
+
+    async alertHaveText(text: string) {
+        const target = this.page.locator('.swal2-html-container')
+        await expect(target).toHaveText(text)
+    }
 }
 ```
 
-### 2. Camada de Helpers de API Reutilizáveis (`tests/support/helpers.ts`)
-Abstraí a preparação e limpeza de estado em funções assíncronas reutilizáveis que validam o retorno HTTP antes de prosseguir com o teste:
+### 2. Helpers de API Reutilizáveis: [`tests/support/helpers.ts`](playwright-mark/tests/support/helpers.ts)
+
+Preparação e limpeza de estado via HTTP, com validação do status da resposta antes de seguir com o teste:
 
 ```ts
-import { expect, APIRequestContext } from '@playwright/test'
-import { TaskModel } from '../fixtures/task.model'
-
 export async function deleteTaskByHelper(request: APIRequestContext, taskName: string) {
     const response = await request.delete(`http://localhost:3333/helper/tasks/${taskName}`)
     expect(response.ok()).toBeTruthy()
@@ -69,64 +152,81 @@ export async function postTask(request: APIRequestContext, task: TaskModel) {
 }
 ```
 
-### 3. Testes Limpos no Padrão AAA — *Arrange, Act, Assert* (`tests/tasks.spec.ts`)
-Com os *helpers* e *models* isolados, os testes ficam extremamente claros e diretos:
+### 3. Testes Limpos no Padrão AAA (*Arrange, Act, Assert*): [`tests/tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts)
+
+Com POM + Helpers, cada teste fica curto, legível e quase uma especificação em linguagem natural:
 
 ```ts
 test('não deve permitir tarefa duplicada', async ({ page, request }) => {
     const task: TaskModel = {
-        name: 'Comprar ketchup',
+        name: 'Comprar Ketchup',
         is_done: false
     }
 
     await deleteTaskByHelper(request, task.name)
     await postTask(request, task)
 
-    await page.goto('http://localhost:8080')
+    const tasksPage: TasksPage = new TasksPage(page)
 
-    const inputTaskName = page.locator('input[class*=InputNewTask]')
-    await inputTaskName.fill(task.name)
-
-    await page.click('css=button >> text=Create')
-
-    const target = page.locator('.swal2-html-container')
-    await expect(target).toHaveText('Task already exists!')
+    await tasksPage.go()
+    await tasksPage.create(task)
+    await tasksPage.alertHaveText('Task already exists!')
 })
+```
+
+### 4. Validação de Formulário HTML5 via DOM
+
+Mensagens nativas de validação não aparecem no DOM como texto. Por isso, leio a propriedade `validationMessage` diretamente do elemento com `evaluate()`:
+
+```ts
+const validationMessage = await tasksPage.inputTaskName.evaluate(
+    e => (e as HTMLInputElement).validationMessage
+)
+expect(validationMessage).toEqual('This is a required field')
 ```
 
 ---
 
-## 🧪 Cenários Implementados e Validação
+## 🧪 Cenários Implementados
 
-### Matriz de Cenários Atuais
-
-| # | Arquivo | Cenário | Estratégia Aplicada | Status |
+| # | Arquivo | Cenário | Estratégia aplicada | Status |
 | --- | --- | --- | --- | --- |
-| 1 | [`home.spec.ts`](playwright-mark/tests/home.spec.ts) | `webapp deve estar online` | Smoke test de disponibilidade e validação do `<title>` da aplicação | ✅ Passando |
-| 2 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve poder cadastrar uma nova tarefa` | Limpeza prévia via API (`DELETE /helper/tasks/:name`), cadastro via UI e asserção de visibilidade na lista | ✅ Passando |
-| 3 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `não deve permitir tarefa duplicada` | Limpeza + *seed* da tarefa via API (`POST /tasks`), tentativa de recadastro via UI e asserção do modal `.swal2-html-container` (`Task already exists!`) | ✅ Passando |
+| 1 | [`home.spec.ts`](playwright-mark/tests/home.spec.ts) | `webapp deve estar online` | Smoke test de disponibilidade validando o `<title>` da aplicação | ✅ |
+| 2 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve poder cadastrar uma nova tarefa` | Limpeza via API (`DELETE /helper/tasks/:name`) → cadastro via `TasksPage` → asserção de visibilidade na lista | ✅ |
+| 3 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `não deve permitir tarefa duplicada` | Limpeza + *seed* via API (`POST /tasks`) → recadastro via UI → asserção do modal SweetAlert2 (`Task already exists!`) | ✅ |
+| 4 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve validar o campo obrigatório` | Submissão com nome vazio → leitura da `validationMessage` nativa do input via `evaluate()` | ✅ |
 
-### Validação e Resultados de Execução
+### 📈 Resultados de Execução
 
-Em **17/10/2026**, a suíte completa foi executada com **3 workers em paralelo** no Chromium:
+Em **18/10/2026**, a suíte completa foi executada no Chromium:
 
-- **3 cenários aprovados (`3 passed` em `1.7s`)**, com zero falhas ou *flakiness*.
-- Execuções consecutivas confirmaram que os *helpers* de API mantêm o banco SQLite sempre no estado esperado antes de cada teste.
-- Ambiente validado com **Node.js 22.23.3** (Playwright Runner + Web) e **Node.js 18.20.8** (API REST + SQLite).
+```text
+Running 4 tests using 4 workers
+
+  ok 1 [chromium] › tests\home.spec.ts:3:5 › webapp deve estar online (634ms)
+  ok 3 [chromium] › tests\tasks.spec.ts:22:5 › não deve permitir tarefa duplicada (752ms)
+  ok 4 [chromium] › tests\tasks.spec.ts:7:5 › deve poder cadastrar uma nova tarefa (750ms)
+  ok 2 [chromium] › tests\tasks.spec.ts:38:5 › deve validar o campo obrigatório (840ms)
+
+  4 passed (1.9s)
+```
+
+- **4 de 4 cenários aprovados** em **1.9s**, com **zero falhas** e **zero flakiness**.
+- Execuções consecutivas confirmam que os helpers de API mantêm o banco sempre no estado esperado.
+- Ambiente validado com **Node.js 22.23.3** (runner + web) e **Node.js 18.20.8** (API + SQLite).
 
 ---
 
-## 🛠️ Stack Tecnológica e Ambiente
+## 🛠️ Stack Tecnológica
 
-| Camada | Tecnologias Utilizadas | Endereço Local |
+| Camada | Tecnologias | Endereço local |
 | --- | --- | --- |
-| **Suíte de Automação** | Playwright Test `^1.63.0`, TypeScript (`strict: true`), Faker `^10.6.0` | Pasta `playwright-mark/` |
+| **Suíte de Automação** | Playwright Test `^1.63.0`, TypeScript (`strict: true`), Faker `^10.6.0` | `playwright-mark/` |
 | **Front-end (SUT)** | SPA React compilada, servida via `http-server` | `http://localhost:8080` |
 | **API REST (SUT)** | Node.js, Express `4.17`, TypeORM, Yup, UUID | `http://localhost:3333/tasks` |
-| **Banco de Dados** | SQLite 3 (`better-sqlite3` `8.2.0`) | Arquivo local em `apps/api/src/database/` |
+| **Banco de Dados** | SQLite 3 (`better-sqlite3` `8.2.0`) | `apps/api/src/database/` |
 
-> ⚠️ **Nota técnica sobre versões do Node.js (Troubleshooting):**
-> O pacote `better-sqlite3` utiliza *addons* nativos em C++. Durante o setup do ambiente, identifiquei que versões mais recentes do Node.js geravam a falha `ERR_DLOPEN_FAILED` ao carregar o binário da API. Resolvi o problema isolando a API no **Node.js 18.20.8** (via `fnm`) enquanto a suíte Playwright e o servidor web rodam no **Node.js 22.23.3** (definido em [`playwright-mark/.node-version`](playwright-mark/.node-version)).
+> ⚠️ **Nota técnica (Troubleshooting):** o `better-sqlite3` usa *addons* nativos em C++. Em versões recentes do Node.js, a API falhava com `ERR_DLOPEN_FAILED`. Resolvi isolando a API no **Node.js 18.20.8** (via `fnm`), enquanto a suíte Playwright e o servidor web rodam no **Node.js 22.23.3** (definido em [`.node-version`](playwright-mark/.node-version)).
 
 ---
 
@@ -135,31 +235,33 @@ Em **17/10/2026**, a suíte completa foi executada com **3 workers em paralelo**
 ```text
 QAx-Playwright/
 ├── README.md
-├── Insomnia_markL.json                 # Coleção Insomnia para exploração manual e testes de API
+├── Insomnia_markL.json                 # Coleção Insomnia para exploração manual da API
 └── playwright-mark/
     ├── apps/
     │   ├── api/                        # API REST + TypeORM + SQLite (porta 3333)
-    │   │   ├── src/
-    │   │   │   ├── controllers/        # TaskController (CRUD + rotas /helper)
-    │   │   │   ├── database/           # Conexão, migrations e arquivo SQLite
-    │   │   │   ├── errors/             # Tratamento padronizado de erros (AppError)
-    │   │   │   ├── models/             # Entidade Task
-    │   │   │   ├── repositories/       # TasksRepository
-    │   │   │   ├── routes.js           # Definição das rotas da API
-    │   │   │   └── server.js           # Inicialização na porta 3333
-    │   │   └── package.json
+    │   │   └── src/
+    │   │       ├── controllers/        # TaskController (CRUD + rotas /helper)
+    │   │       ├── database/           # Conexão, migrations e arquivo SQLite
+    │   │       ├── errors/             # Tratamento padronizado de erros (AppError)
+    │   │       ├── models/             # Entidade Task
+    │   │       ├── repositories/       # TasksRepository
+    │   │       ├── routes.js           # Definição das rotas
+    │   │       └── server.js           # Inicialização do servidor
     │   └── web/                        # Front-end SPA do Mark L (porta 8080)
-    ├── tests/                          # 🎭 Suíte de Testes E2E (Playwright + TypeScript)
+    ├── tests/                          # 🎭 Suíte E2E (Playwright + TypeScript)
     │   ├── fixtures/
-    │   │   └── task.model.ts           # Interface e tipagem do modelo TaskModel
+    │   │   └── task.model.ts           # Contrato tipado TaskModel
     │   ├── support/
-    │   │   └── helpers.ts              # Helpers reutilizáveis de API (deleteTaskByHelper, postTask)
+    │   │   ├── pages/
+    │   │   │   └── tasks/
+    │   │   │       └── index.ts        # Page Object TasksPage
+    │   │   └── helpers.ts              # Helpers de API (deleteTaskByHelper, postTask)
     │   ├── home.spec.ts                # Smoke test da página inicial
-    │   └── tasks.spec.ts               # Cenários de cadastro e regras de negócio de tarefas
-    ├── .node-version                   # Versão principal do Node.js (22)
+    │   └── tasks.spec.ts               # Cenários de cadastro e regras de negócio
+    ├── .node-version                   # Versão do Node.js do runner (22)
     ├── package.json
-    ├── playwright.config.ts            # Configuração do runner, paralelismo, retries e trace
-    └── tsconfig.json                   # TypeScript configurado com strict: true
+    ├── playwright.config.ts            # Paralelismo, retries, reporter e trace
+    └── tsconfig.json                   # TypeScript com strict: true
 ```
 
 ---
@@ -168,20 +270,20 @@ QAx-Playwright/
 
 | Método | Rota | Função |
 | --- | --- | --- |
-| `GET` | `/tasks` | Lista todas as tarefas cadastradas |
-| `POST` | `/tasks` | Cadastra uma nova tarefa (`{ name, is_done }`) |
-| `PUT` | `/tasks/:id` | Atualiza o status de conclusão (`is_done`) |
+| `GET` | `/tasks` | Lista todas as tarefas |
+| `POST` | `/tasks` | Cadastra uma tarefa (`{ name, is_done }`) |
+| `PUT` | `/tasks/:id` | Atualiza o status `is_done` |
 | `DELETE` | `/tasks/:id` | Remove uma tarefa pelo UUID |
-| `DELETE` | `/helper/tasks` | 🧪 *Helper de teste:* exclui tarefa pelo nome no corpo JSON |
-| `DELETE` | `/helper/tasks/:task_name` | 🧪 *Helper de teste:* exclui tarefa pelo nome na URL |
+| `DELETE` | `/helper/tasks` | 🧪 *Helper de teste:* remove tarefa pelo nome (corpo JSON) |
+| `DELETE` | `/helper/tasks/:task_name` | 🧪 *Helper de teste:* remove tarefa pelo nome (URL) |
 
-As rotas `/helper/*` ficam ativas apenas quando `NODE_ENV !== 'production'`, permitindo limpeza rápida do estado do banco antes de cada cenário. A coleção [`Insomnia_markL.json`](Insomnia_markL.json) na raiz do projeto também documenta essas chamadas.
+As rotas `/helper/*` só ficam ativas quando `NODE_ENV !== 'production'`, permitindo resetar o estado do banco antes de cada cenário. A coleção [`Insomnia_markL.json`](Insomnia_markL.json) documenta todas essas chamadas.
 
 ---
 
-## 🚀 Como Executar o Projeto Localmente
+## 🚀 Como Executar Localmente
 
-Os comandos abaixo utilizam **PowerShell** e o gerenciador de versões **`fnm`** (você também pode usar `nvm`).
+Os comandos abaixo usam **PowerShell** e o gerenciador de versões **`fnm`** (também funciona com `nvm`).
 
 ### 1. Clonar o repositório
 
@@ -190,7 +292,7 @@ git clone https://github.com/DouglasAntoni0/QAx-Playwright.git
 cd QAx-Playwright
 ```
 
-### 2. Iniciar a API — Terminal 1
+### 2. Subir a API (Terminal 1)
 
 ```powershell
 cd playwright-mark/apps/api
@@ -199,9 +301,10 @@ fnm use 18.20.8
 npm ci
 npm run dev
 ```
-> A API ficará ativa em `http://localhost:3333/tasks`. Caso precise inicializar um banco limpo, rode `npm run db:init` antes de `npm run dev`.
 
-### 3. Iniciar a Interface Web — Terminal 2
+> A API ficará ativa em `http://localhost:3333/tasks`. Para um banco limpo, rode `npm run db:init` antes do `npm run dev`.
+
+### 3. Subir a Interface Web (Terminal 2)
 
 ```powershell
 cd playwright-mark/apps/web
@@ -210,9 +313,10 @@ fnm use 22.23.3
 npm ci
 npm run dev
 ```
-> A aplicação web ficará disponível em `http://localhost:8080`.
 
-### 4. Executar a Suíte de Testes — Terminal 3
+> A aplicação ficará disponível em `http://localhost:8080`.
+
+### 4. Executar a Suíte de Testes (Terminal 3)
 
 ```powershell
 cd playwright-mark
@@ -222,12 +326,12 @@ npx playwright install chromium
 npm test
 ```
 
-Comandos úteis para inspeção e depuração:
+Comandos úteis:
 
 ```powershell
-npm run test:ui                           # Abre o UI Mode interativo do Playwright
+npm run test:ui                           # UI Mode interativo do Playwright
 npx playwright test tests/tasks.spec.ts   # Executa apenas a suíte de tarefas
-npx playwright show-report                # Abre o relatório HTML detalhado
+npx playwright show-report                # Abre o relatório HTML
 ```
 
 ---
@@ -236,17 +340,18 @@ npx playwright show-report                # Abre o relatório HTML detalhado
 
 - [x] Estruturar o projeto com Playwright e TypeScript (`strict: true`)
 - [x] Configurar e validar o ambiente completo (Web + API + SQLite)
-- [x] Implementar smoke test da página inicial (`home.spec.ts`)
-- [x] Implementar teste E2E de cadastro de nova tarefa
-- [x] Criar modelagem tipada (`TaskModel`) em `tests/fixtures/`
-- [x] Extrair *helpers* reutilizáveis de API (`deleteTaskByHelper` e `postTask`) em `tests/support/`
-- [x] Implementar cenário de bloqueio de tarefa duplicada validando modal SweetAlert2
-- [ ] Validar obrigatoriedade de campo (submissão vazia)
+- [x] Smoke test da página inicial (`home.spec.ts`)
+- [x] Teste E2E de cadastro de nova tarefa
+- [x] Modelagem tipada (`TaskModel`) em `tests/fixtures/`
+- [x] Helpers reutilizáveis de API (`deleteTaskByHelper` e `postTask`)
+- [x] Bloqueio de tarefa duplicada validando modal SweetAlert2
+- [x] Arquitetura **Page Object Model** com a classe `TasksPage`
+- [x] Validação de campo obrigatório via `validationMessage` (HTML5)
 - [ ] Automatizar conclusão (toggle) e exclusão de tarefas pela interface
-- [ ] Centralizar massa de testes em *fixtures* JSON / geração dinâmica com Faker
-- [ ] Evoluir a arquitetura para **Page Object Model (POM)**
+- [ ] Agrupar cenários com `test.describe` e hooks (`beforeEach`)
+- [ ] Massa de testes em *fixtures* JSON / geração dinâmica com Faker
 - [ ] Centralizar URLs com `baseURL` e variáveis de ambiente (`.env`)
-- [ ] Configurar execução multi-browser (Chromium, Firefox, WebKit) e pipeline no **GitHub Actions**
+- [ ] Execução multi-browser (Chromium, Firefox, WebKit) e pipeline no **GitHub Actions**
 
 ---
 
@@ -261,10 +366,11 @@ npx playwright show-report                # Abre o relatório HTML detalhado
       </a>
     </td>
     <td>
-      <b>QA Automation Engineer em evolução contínua | Playwright · TypeScript · Testes E2E & API</b><br><br>
-      Sou apaixonado por <b>Qualidade de Software</b> e acredito que testar vai muito além de verificar se um botão funciona: trata-se de construir <b>confiança, velocidade de entrega e prevenção de regressões</b> através de código limpo e bem arquitetado.<br><br>
-      Neste repositório, demonstro na prática minha capacidade de estruturar projetos de automação do zero, integrar chamadas de API para otimizar testes de UI, aplicar boas práticas de engenharia de software em TypeScript e diagnosticar problemas reais de ambiente.<br><br>
-      📫 <b>Contato:</b> <a href="mailto:douglas.doug1235@gmail.com">douglas.doug1235@gmail.com</a> · 
+      <b>QA Automation Engineer | Playwright · TypeScript · Testes E2E & API</b><br><br>
+      Sou apaixonado por <b>Qualidade de Software</b> e acredito que testar vai muito além de verificar se um botão funciona: é construir <b>confiança, velocidade de entrega e prevenção de regressões</b> com código limpo e bem arquitetado.<br><br>
+      Neste repositório eu demonstro, na prática, que sei <b>estruturar automação do zero</b>, aplicar <b>Page Object Model</b>, combinar <b>API e UI</b> para testes mais rápidos e estáveis, manter <b>tipagem estrita</b> em TypeScript e <b>diagnosticar problemas reais de ambiente</b>.<br><br>
+      💼 <b>Aberto a oportunidades</b> em QA / Automação de Testes.<br><br>
+      📫 <b>Contato:</b> <a href="mailto:douglas.doug1235@gmail.com">douglas.doug1235@gmail.com</a> ·
       🐙 <b>GitHub:</b> <a href="https://github.com/DouglasAntoni0">github.com/DouglasAntoni0</a>
     </td>
   </tr>
@@ -274,7 +380,9 @@ npx playwright show-report                # Abre o relatório HTML detalhado
 
 <div align="center">
 
-**Referência de estudo:** Curso [Playwright eXpress](https://www.udemy.com/course/playwright-express/) — Fernando Papito (QAx).  
+**Referência de estudo:** curso [Playwright eXpress](https://www.udemy.com/course/playwright-express/), de Fernando Papito (QAx).<br>
 *Suíte de testes, refatorações, arquitetura de suporte e documentação desenvolvidas por **Douglas Antonio**.*
+
+⭐ Se este projeto te ajudou ou chamou sua atenção, deixe uma estrela!
 
 </div>
