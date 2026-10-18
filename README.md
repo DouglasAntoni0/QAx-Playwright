@@ -369,7 +369,6 @@ npx playwright show-report                # Abre o relatório HTML
       <b>QA Automation Engineer | Playwright · TypeScript · Testes E2E & API</b><br><br>
       Sou apaixonado por <b>Qualidade de Software</b> e acredito que testar vai muito além de verificar se um botão funciona: é construir <b>confiança, velocidade de entrega e prevenção de regressões</b> com código limpo e bem arquitetado.<br><br>
       Neste repositório eu demonstro, na prática, que sei <b>estruturar automação do zero</b>, aplicar <b>Page Object Model</b>, combinar <b>API e UI</b> para testes mais rápidos e estáveis, manter <b>tipagem estrita</b> em TypeScript e <b>diagnosticar problemas reais de ambiente</b>.<br><br>
-      💼 <b>Aberto a oportunidades</b> em QA / Automação de Testes.<br><br>
       📫 <b>Contato:</b> <a href="mailto:douglas.doug1235@gmail.com">douglas.doug1235@gmail.com</a> ·
       🐙 <b>GitHub:</b> <a href="https://github.com/DouglasAntoni0">github.com/DouglasAntoni0</a>
     </td>
@@ -382,7 +381,5 @@ npx playwright show-report                # Abre o relatório HTML
 
 **Referência de estudo:** curso [Playwright eXpress](https://www.udemy.com/course/playwright-express/), de Fernando Papito (QAx).<br>
 *Suíte de testes, refatorações, arquitetura de suporte e documentação desenvolvidas por **Douglas Antonio**.*
-
-⭐ Se este projeto te ajudou ou chamou sua atenção, deixe uma estrela!
 
 </div>
