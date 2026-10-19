@@ -12,8 +12,8 @@
 [![Express](https://img.shields.io/badge/Express-4.17-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 
-[![Tests](https://img.shields.io/badge/Testes-4%20Passing-brightgreen?style=for-the-badge&logo=checkmarx&logoColor=white)](#-resultados-de-execução)
-[![Tempo](https://img.shields.io/badge/Execução-1.9s-blueviolet?style=for-the-badge&logo=speedtest&logoColor=white)](#-resultados-de-execução)
+[![Tests](https://img.shields.io/badge/Testes-5%20Passing-brightgreen?style=for-the-badge&logo=checkmarx&logoColor=white)](#-resultados-de-execução)
+[![Tempo](https://img.shields.io/badge/Execução-1.8s-blueviolet?style=for-the-badge&logo=speedtest&logoColor=white)](#-resultados-de-execução)
 [![Flaky](https://img.shields.io/badge/Flaky-0%25-success?style=for-the-badge)](#-resultados-de-execução)
 [![Pattern](https://img.shields.io/badge/Pattern-Page%20Object%20Model-orange?style=for-the-badge)](#-arquitetura-da-suíte)
 
@@ -25,15 +25,15 @@
 
 > **Quem sou:** Douglas Antonio, QA Automation Engineer focado em Playwright, TypeScript e testes E2E & API.
 >
-> **O que este repositório prova:** que eu sei **estruturar uma suíte de automação do zero**, aplicando os mesmos padrões usados em projetos profissionais: **Page Object Model**, **tipagem estrita**, **preparação de massa via API**, **testes 100% independentes** e **execução paralela sem flakiness**.
+> **O que este repositório prova:** que eu sei **estruturar uma suíte de automação do zero**, aplicando os mesmos padrões usados em projetos profissionais: **Page Object Model**, **tipagem estrita**, **massa de dados externa em JSON**, **preparação de estado via API**, **testes 100% independentes** e **execução paralela sem flakiness**.
 
 | 📊 Indicador | Resultado |
 | --- | --- |
-| Cenários automatizados | **4** (smoke, happy path, regra de negócio e validação de formulário) |
-| Tempo total da suíte | **~1.9s** com **4 workers em paralelo** |
+| Cenários automatizados | **5** (smoke, cadastro, regra de negócio, validação de formulário e conclusão de tarefa) |
+| Tempo total da suíte | **~1.8s** com **5 workers em paralelo** |
 | Taxa de flakiness | **0%** em execuções consecutivas |
 | Dependência entre testes | **Nenhuma**: cada teste prepara e limpa a própria massa |
-| Camadas de abstração | **Page Objects** (UI) + **Helpers de API** + **Models tipados** |
+| Camadas de abstração | **Page Objects** (UI) + **Helpers de API** + **Models tipados** + **Massa de dados em JSON** |
 
 ---
 
@@ -55,8 +55,10 @@ Eu não me limitei a reproduzir exercícios. A cada aula, **refatorei, documente
 | ⚡ **Estratégia Híbrida (API + UI)** | Uso o `APIRequestContext` do Playwright para **limpar e pré-cadastrar dados direto na API REST**, evitando passos lentos e frágeis pela interface só para montar cenário. |
 | 🧼 **Clean Code & DRY** | Chamadas HTTP repetidas foram extraídas para [`helpers.ts`](playwright-mark/tests/support/helpers.ts). Os arquivos `.spec.ts` ficaram enxutos e focados **apenas na regra de negócio**. |
 | 🔒 **Tipagem Estrita em TypeScript** | Contratos de dados com [`TaskModel`](playwright-mark/tests/fixtures/task.model.ts) e `strict: true`, garantindo *autocomplete* seguro e erros detectados **antes** da execução. |
+| 📦 **Massa de Dados Desacoplada** | Os dados de cada cenário ficam em [`tasks.json`](playwright-mark/tests/fixtures/tasks.json), importado com `resolveJsonModule` e tipado como `TaskModel`. Alterar a massa **não exige mexer no código do teste**. |
+| 🗂️ **Organização por Funcionalidade** | Cenários agrupados com `test.describe` (`cadastro` e `atualização`), deixando o relatório e a leitura da suíte mais claros. |
 | 🔁 **Independência e Idempotência** | Cada cenário controla a própria massa (`deleteTaskByHelper` + `postTask`). Resultado: **execução 100% paralela**, sem efeito colateral e sem "sujeira" no banco. |
-| ✅ **Cobertura além do Happy Path** | Valido o fluxo feliz, a **regra de negócio de duplicidade** (modal SweetAlert2) e a **validação nativa de formulário HTML5** (`validationMessage`), lendo propriedades do DOM via `evaluate()`. |
+| ✅ **Cobertura além do Happy Path** | Valido o fluxo feliz, a **regra de negócio de duplicidade** (modal SweetAlert2), a **validação nativa de formulário HTML5** (`validationMessage`) e a **conclusão de tarefa**, conferindo o estilo `line-through` via `toHaveCSS()`. |
 | 🛠️ **Troubleshooting de Ambiente** | Diagnostiquei e resolvi a falha `ERR_DLOPEN_FAILED` do módulo nativo `better-sqlite3` isolando versões do Node.js por camada (`18.20.8` na API e `22.23.3` no runner). |
 | 🔍 **Observabilidade** | **HTML Reporter**, **UI Mode** e **Trace Viewer** (`on-first-retry`) configurados para inspeção de rede, DOM, *snapshots* e console. |
 
@@ -75,6 +77,7 @@ flowchart LR
         PO["TasksPage<br/>(Page Object)"]
         HP["helpers.ts<br/>(API Helpers)"]
         M["TaskModel<br/>(Contrato tipado)"]
+        D["tasks.json<br/>(Massa de dados)"]
     end
 
     subgraph SUT["🎯 Sistema sob Teste"]
@@ -86,6 +89,7 @@ flowchart LR
     T --> PO
     T --> HP
     T -.-> M
+    T -.-> D
     PO -.-> M
     HP -.-> M
     H --> WEB
@@ -124,6 +128,11 @@ export class TasksPage {
         await this.page.click('css=button >> text=Create')
     }
 
+    async toggle(taskName: string) {
+        const target = this.page.locator(`xpath=//p[text()="${taskName}"]/..//button[contains(@class, "Toggle")]`)
+        await target.click()
+    }
+
     async shouldHaveText(taskName: string) {
         const target = this.page.locator(`css=.task-item p >> text=${taskName}`)
         await expect(target).toBeVisible()
@@ -132,6 +141,11 @@ export class TasksPage {
     async alertHaveText(text: string) {
         const target = this.page.locator('.swal2-html-container')
         await expect(target).toHaveText(text)
+    }
+
+    async shouldBeDone(taskName: string) {
+        const target = this.page.getByText(taskName)
+        await expect(target).toHaveCSS('text-decoration-line', 'line-through')
     }
 }
 ```
@@ -152,29 +166,43 @@ export async function postTask(request: APIRequestContext, task: TaskModel) {
 }
 ```
 
-### 3. Testes Limpos no Padrão AAA (*Arrange, Act, Assert*): [`tests/tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts)
+### 3. Massa de Dados em JSON: [`tests/fixtures/tasks.json`](playwright-mark/tests/fixtures/tasks.json)
 
-Com POM + Helpers, cada teste fica curto, legível e quase uma especificação em linguagem natural:
+Os dados ficam fora do código, com uma chave para cada cenário. O import funciona graças ao `resolveJsonModule: true` no [`tsconfig.json`](playwright-mark/tsconfig.json):
+
+```json
+{
+    "success": { "name": "Ler um livro de TypeScript", "is_done": false },
+    "duplicate": { "name": "Comprar Ketchup", "is_done": false },
+    "required": { "name": "", "is_done": false },
+    "update": { "name": "Pagar a fatura do cartão", "is_done": false }
+}
+```
+
+### 4. Testes Limpos no Padrão AAA (*Arrange, Act, Assert*): [`tests/tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts)
+
+Com POM + Helpers + massa em JSON, cada teste fica curto, legível e quase uma especificação em linguagem natural:
 
 ```ts
-test('não deve permitir tarefa duplicada', async ({ page, request }) => {
-    const task: TaskModel = {
-        name: 'Comprar Ketchup',
-        is_done: false
-    }
+import data from './fixtures/tasks.json'
 
-    await deleteTaskByHelper(request, task.name)
-    await postTask(request, task)
+test.describe('atualização', () => {
+    test('deve concluir uma tarefa', async ({ page, request }) => {
+        const task = data.update as TaskModel
 
-    const tasksPage: TasksPage = new TasksPage(page)
+        await deleteTaskByHelper(request, task.name)
+        await postTask(request, task)
 
-    await tasksPage.go()
-    await tasksPage.create(task)
-    await tasksPage.alertHaveText('Task already exists!')
+        const tasksPage: TasksPage = new TasksPage(page)
+
+        await tasksPage.go()
+        await tasksPage.toggle(task.name)
+        await tasksPage.shouldBeDone(task.name)
+    })
 })
 ```
 
-### 4. Validação de Formulário HTML5 via DOM
+### 5. Validação de Formulário HTML5 via DOM
 
 Mensagens nativas de validação não aparecem no DOM como texto. Por isso, leio a propriedade `validationMessage` diretamente do elemento com `evaluate()`:
 
@@ -195,23 +223,25 @@ expect(validationMessage).toEqual('This is a required field')
 | 2 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve poder cadastrar uma nova tarefa` | Limpeza via API (`DELETE /helper/tasks/:name`) → cadastro via `TasksPage` → asserção de visibilidade na lista | ✅ |
 | 3 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `não deve permitir tarefa duplicada` | Limpeza + *seed* via API (`POST /tasks`) → recadastro via UI → asserção do modal SweetAlert2 (`Task already exists!`) | ✅ |
 | 4 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve validar o campo obrigatório` | Submissão com nome vazio → leitura da `validationMessage` nativa do input via `evaluate()` | ✅ |
+| 5 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve concluir uma tarefa` | Limpeza + *seed* via API → clique no botão *Toggle* (localizado por XPath) → asserção do estilo `line-through` com `toHaveCSS()` | ✅ |
 
 ### 📈 Resultados de Execução
 
-Em **18/10/2026**, a suíte completa foi executada no Chromium:
+Em **19/10/2026**, a suíte completa foi executada no Chromium:
 
 ```text
-Running 4 tests using 4 workers
+Running 5 tests using 5 workers
 
-  ok 1 [chromium] › tests\home.spec.ts:3:5 › webapp deve estar online (634ms)
-  ok 3 [chromium] › tests\tasks.spec.ts:22:5 › não deve permitir tarefa duplicada (752ms)
-  ok 4 [chromium] › tests\tasks.spec.ts:7:5 › deve poder cadastrar uma nova tarefa (750ms)
-  ok 2 [chromium] › tests\tasks.spec.ts:38:5 › deve validar o campo obrigatório (840ms)
+  ok 1 [chromium] › tests\home.spec.ts:3:5 › webapp deve estar online (586ms)
+  ok 2 [chromium] › tests\tasks.spec.ts:10:9 › cadastro › deve poder cadastrar uma nova tarefa (694ms)
+  ok 3 [chromium] › tests\tasks.spec.ts:51:9 › atualização › deve concluir uma tarefa (711ms)
+  ok 5 [chromium] › tests\tasks.spec.ts:35:9 › cadastro › deve validar o campo obrigatório (729ms)
+  ok 4 [chromium] › tests\tasks.spec.ts:22:9 › cadastro › não deve permitir tarefa duplicada (828ms)
 
-  4 passed (1.9s)
+  5 passed (1.8s)
 ```
 
-- **4 de 4 cenários aprovados** em **1.9s**, com **zero falhas** e **zero flakiness**.
+- **5 de 5 cenários aprovados** em **1.8s**, com **zero falhas** e **zero flakiness**.
 - Execuções consecutivas confirmam que os helpers de API mantêm o banco sempre no estado esperado.
 - Ambiente validado com **Node.js 22.23.3** (runner + web) e **Node.js 18.20.8** (API + SQLite).
 
@@ -250,18 +280,19 @@ QAx-Playwright/
     │   └── web/                        # Front-end SPA do Mark L (porta 8080)
     ├── tests/                          # 🎭 Suíte E2E (Playwright + TypeScript)
     │   ├── fixtures/
-    │   │   └── task.model.ts           # Contrato tipado TaskModel
+    │   │   ├── task.model.ts           # Contrato tipado TaskModel
+    │   │   └── tasks.json              # Massa de dados dos cenários
     │   ├── support/
     │   │   ├── pages/
     │   │   │   └── tasks/
     │   │   │       └── index.ts        # Page Object TasksPage
     │   │   └── helpers.ts              # Helpers de API (deleteTaskByHelper, postTask)
     │   ├── home.spec.ts                # Smoke test da página inicial
-    │   └── tasks.spec.ts               # Cenários de cadastro e regras de negócio
+    │   └── tasks.spec.ts               # Cenários de cadastro e atualização de tarefas
     ├── .node-version                   # Versão do Node.js do runner (22)
     ├── package.json
     ├── playwright.config.ts            # Paralelismo, retries, reporter e trace
-    └── tsconfig.json                   # TypeScript com strict: true
+    └── tsconfig.json                   # TypeScript com strict: true e resolveJsonModule
 ```
 
 ---
@@ -347,9 +378,12 @@ npx playwright show-report                # Abre o relatório HTML
 - [x] Bloqueio de tarefa duplicada validando modal SweetAlert2
 - [x] Arquitetura **Page Object Model** com a classe `TasksPage`
 - [x] Validação de campo obrigatório via `validationMessage` (HTML5)
-- [ ] Automatizar conclusão (toggle) e exclusão de tarefas pela interface
-- [ ] Agrupar cenários com `test.describe` e hooks (`beforeEach`)
-- [ ] Massa de testes em *fixtures* JSON / geração dinâmica com Faker
+- [x] Agrupar cenários por funcionalidade com `test.describe`
+- [x] Massa de testes em *fixtures* JSON (`tasks.json`)
+- [x] Automatizar a conclusão (toggle) de tarefas pela interface
+- [ ] Automatizar a exclusão de tarefas pela interface
+- [ ] Usar hooks (`beforeEach`) para reduzir repetição entre cenários
+- [ ] Geração dinâmica de massa com Faker
 - [ ] Centralizar URLs com `baseURL` e variáveis de ambiente (`.env`)
 - [ ] Execução multi-browser (Chromium, Firefox, WebKit) e pipeline no **GitHub Actions**
 
