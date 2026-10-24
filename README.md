@@ -12,8 +12,8 @@
 [![Express](https://img.shields.io/badge/Express-4.17-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 
-[![Tests](https://img.shields.io/badge/Testes-5%20Passing-brightgreen?style=for-the-badge&logo=checkmarx&logoColor=white)](#-resultados-de-execução)
-[![Tempo](https://img.shields.io/badge/Execução-1.8s-blueviolet?style=for-the-badge&logo=speedtest&logoColor=white)](#-resultados-de-execução)
+[![Tests](https://img.shields.io/badge/Testes-6%20Passing-brightgreen?style=for-the-badge&logo=checkmarx&logoColor=white)](#-resultados-de-execução)
+[![Tempo](https://img.shields.io/badge/Execução-1.5s-blueviolet?style=for-the-badge&logo=speedtest&logoColor=white)](#-resultados-de-execução)
 [![Flaky](https://img.shields.io/badge/Flaky-0%25-success?style=for-the-badge)](#-resultados-de-execução)
 [![Pattern](https://img.shields.io/badge/Pattern-Page%20Object%20Model-orange?style=for-the-badge)](#-arquitetura-da-suíte)
 
@@ -25,12 +25,12 @@
 
 > **Quem sou:** Douglas Antonio, QA Automation Engineer focado em Playwright, TypeScript e testes E2E & API.
 >
-> **O que este repositório prova:** que eu sei **estruturar uma suíte de automação do zero**, aplicando os mesmos padrões usados em projetos profissionais: **Page Object Model**, **tipagem estrita**, **massa de dados externa em JSON**, **preparação de estado via API**, **testes 100% independentes** e **execução paralela sem flakiness**.
+> **O que este repositório prova:** que eu sei **estruturar uma suíte de automação do zero**, aplicando os mesmos padrões usados em projetos profissionais: **Page Object Model**, **tipagem estrita**, **massa de dados externa em JSON**, **configuração por variáveis de ambiente**, **preparação de estado via API**, **testes 100% independentes** e **execução paralela sem flakiness**.
 
 | 📊 Indicador | Resultado |
 | --- | --- |
-| Cenários automatizados | **5** (smoke, cadastro, regra de negócio, validação de formulário e conclusão de tarefa) |
-| Tempo total da suíte | **~1.8s** com **5 workers em paralelo** |
+| Cenários automatizados | **6** (smoke, cadastro, regra de negócio, validação de formulário, conclusão e exclusão de tarefa) |
+| Tempo total da suíte | **~1.5s** com **6 workers em paralelo** |
 | Taxa de flakiness | **0%** em execuções consecutivas |
 | Dependência entre testes | **Nenhuma**: cada teste prepara e limpa a própria massa |
 | Camadas de abstração | **Page Objects** (UI) + **Helpers de API** + **Models tipados** + **Massa de dados em JSON** |
@@ -56,9 +56,10 @@ Eu não me limitei a reproduzir exercícios. A cada aula, **refatorei, documente
 | 🧼 **Clean Code & DRY** | Chamadas HTTP repetidas foram extraídas para [`helpers.ts`](playwright-mark/tests/support/helpers.ts). Os arquivos `.spec.ts` ficaram enxutos e focados **apenas na regra de negócio**. |
 | 🔒 **Tipagem Estrita em TypeScript** | Contratos de dados com [`TaskModel`](playwright-mark/tests/fixtures/task.model.ts) e `strict: true`, garantindo *autocomplete* seguro e erros detectados **antes** da execução. |
 | 📦 **Massa de Dados Desacoplada** | Os dados de cada cenário ficam em [`tasks.json`](playwright-mark/tests/fixtures/tasks.json), importado com `resolveJsonModule` e tipado como `TaskModel`. Alterar a massa **não exige mexer no código do teste**. |
-| 🗂️ **Organização por Funcionalidade** | Cenários agrupados com `test.describe` (`cadastro` e `atualização`), deixando o relatório e a leitura da suíte mais claros. |
+| 🗂️ **Organização por Funcionalidade** | Cenários agrupados com `test.describe` (`cadastro`, `atualização` e `exclusão`), deixando o relatório e a leitura da suíte mais claros. |
+| 🌍 **Configuração por Ambiente** | URLs centralizadas em variáveis de ambiente (`BASE_URL` e `BASE_API`) carregadas com `dotenv`. A UI usa o `baseURL` do Playwright (`page.goto('/')`) e os helpers usam `BASE_API`, sem nenhum endereço fixo no código. |
 | 🔁 **Independência e Idempotência** | Cada cenário controla a própria massa (`deleteTaskByHelper` + `postTask`). Resultado: **execução 100% paralela**, sem efeito colateral e sem "sujeira" no banco. |
-| ✅ **Cobertura além do Happy Path** | Valido o fluxo feliz, a **regra de negócio de duplicidade** (modal SweetAlert2), a **validação nativa de formulário HTML5** (`validationMessage`) e a **conclusão de tarefa**, conferindo o estilo `line-through` via `toHaveCSS()`. |
+| ✅ **Cobertura além do Happy Path** | Valido o fluxo feliz, a **regra de negócio de duplicidade** (modal SweetAlert2), a **validação nativa de formulário HTML5** (`validationMessage`), a **conclusão de tarefa** (estilo `line-through` via `toHaveCSS()`) e a **exclusão de tarefa** (ausência na lista via `not.toBeVisible()`). |
 | 🛠️ **Troubleshooting de Ambiente** | Diagnostiquei e resolvi a falha `ERR_DLOPEN_FAILED` do módulo nativo `better-sqlite3` isolando versões do Node.js por camada (`18.20.8` na API e `22.23.3` no runner). |
 | 🔍 **Observabilidade** | **HTML Reporter**, **UI Mode** e **Trace Viewer** (`on-first-retry`) configurados para inspeção de rede, DOM, *snapshots* e console. |
 
@@ -78,6 +79,7 @@ flowchart LR
         HP["helpers.ts<br/>(API Helpers)"]
         M["TaskModel<br/>(Contrato tipado)"]
         D["tasks.json<br/>(Massa de dados)"]
+        E[".env<br/>(BASE_URL / BASE_API)"]
     end
 
     subgraph SUT["🎯 Sistema sob Teste"]
@@ -92,6 +94,8 @@ flowchart LR
     T -.-> D
     PO -.-> M
     HP -.-> M
+    PO -.-> E
+    HP -.-> E
     H --> WEB
     PO -->|"UI: fill, click, expect"| WEB
     HP -->|"HTTP: DELETE / POST"| API
@@ -120,7 +124,7 @@ export class TasksPage {
     }
 
     async go() {
-        await this.page.goto('http://localhost:8080')
+        await this.page.goto('/') // resolvido pelo baseURL (BASE_URL no .env)
     }
 
     async create(task: TaskModel) {
@@ -131,6 +135,16 @@ export class TasksPage {
     async toggle(taskName: string) {
         const target = this.page.locator(`xpath=//p[text()="${taskName}"]/..//button[contains(@class, "Toggle")]`)
         await target.click()
+    }
+
+    async remove(taskName: string) {
+        const target = this.page.locator(`xpath=//p[text()="${taskName}"]/..//button[contains(@class, "Delete")]`)
+        await target.click()
+    }
+
+    async shouldNotExist(taskName: string) {
+        const target = this.page.locator(`css=.task-item p >> text=${taskName}`)
+        await expect(target).not.toBeVisible()
     }
 
     async shouldHaveText(taskName: string) {
@@ -152,16 +166,20 @@ export class TasksPage {
 
 ### 2. Helpers de API Reutilizáveis: [`tests/support/helpers.ts`](playwright-mark/tests/support/helpers.ts)
 
-Preparação e limpeza de estado via HTTP, com validação do status da resposta antes de seguir com o teste:
+Preparação e limpeza de estado via HTTP, com o endereço da API vindo do `.env` e validação do status da resposta antes de seguir com o teste:
 
 ```ts
+import 'dotenv/config'
+
+const BASE_API = process.env.BASE_API
+
 export async function deleteTaskByHelper(request: APIRequestContext, taskName: string) {
-    const response = await request.delete(`http://localhost:3333/helper/tasks/${taskName}`)
+    const response = await request.delete(`${BASE_API}/helper/tasks/${taskName}`)
     expect(response.ok()).toBeTruthy()
 }
 
 export async function postTask(request: APIRequestContext, task: TaskModel) {
-    const newTask = await request.post('http://localhost:3333/tasks', { data: task })
+    const newTask = await request.post(`${BASE_API}/tasks`, { data: task })
     expect(newTask.ok()).toBeTruthy()
 }
 ```
@@ -175,7 +193,8 @@ Os dados ficam fora do código, com uma chave para cada cenário. O import funci
     "success": { "name": "Ler um livro de TypeScript", "is_done": false },
     "duplicate": { "name": "Comprar Ketchup", "is_done": false },
     "required": { "name": "", "is_done": false },
-    "update": { "name": "Pagar a fatura do cartão", "is_done": false }
+    "update": { "name": "Pagar a fatura do cartão", "is_done": false },
+    "delete": { "name": "Estudar Ruby", "is_done": false }
 }
 ```
 
@@ -186,9 +205,9 @@ Com POM + Helpers + massa em JSON, cada teste fica curto, legível e quase uma e
 ```ts
 import data from './fixtures/tasks.json'
 
-test.describe('atualização', () => {
-    test('deve concluir uma tarefa', async ({ page, request }) => {
-        const task = data.update as TaskModel
+test.describe('exclusão', () => {
+    test('deve excluir uma tarefa', async ({ page, request }) => {
+        const task = data.delete as TaskModel
 
         await deleteTaskByHelper(request, task.name)
         await postTask(request, task)
@@ -196,8 +215,8 @@ test.describe('atualização', () => {
         const tasksPage: TasksPage = new TasksPage(page)
 
         await tasksPage.go()
-        await tasksPage.toggle(task.name)
-        await tasksPage.shouldBeDone(task.name)
+        await tasksPage.remove(task.name)
+        await tasksPage.shouldNotExist(task.name)
     })
 })
 ```
@@ -213,6 +232,20 @@ const validationMessage = await tasksPage.inputTaskName.evaluate(
 expect(validationMessage).toEqual('This is a required field')
 ```
 
+### 6. Configuração por Variáveis de Ambiente: [`playwright.config.ts`](playwright-mark/playwright.config.ts)
+
+Os endereços da aplicação ficam no `.env` (modelo versionado em [`.env.example`](playwright-mark/.env.example)) e são carregados pelo `dotenv`. Trocar de ambiente não exige alterar nenhum teste:
+
+```ts
+import 'dotenv/config';
+
+export default defineConfig({
+  use: {
+    baseURL: process.env.BASE_URL,
+  },
+});
+```
+
 ---
 
 ## 🧪 Cenários Implementados
@@ -224,24 +257,26 @@ expect(validationMessage).toEqual('This is a required field')
 | 3 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `não deve permitir tarefa duplicada` | Limpeza + *seed* via API (`POST /tasks`) → recadastro via UI → asserção do modal SweetAlert2 (`Task already exists!`) | ✅ |
 | 4 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve validar o campo obrigatório` | Submissão com nome vazio → leitura da `validationMessage` nativa do input via `evaluate()` | ✅ |
 | 5 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve concluir uma tarefa` | Limpeza + *seed* via API → clique no botão *Toggle* (localizado por XPath) → asserção do estilo `line-through` com `toHaveCSS()` | ✅ |
+| 6 | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | `deve excluir uma tarefa` | Limpeza + *seed* via API → clique no botão *Delete* (localizado por XPath) → asserção de que a tarefa não está mais visível com `not.toBeVisible()` | ✅ |
 
 ### 📈 Resultados de Execução
 
-Em **19/10/2026**, a suíte completa foi executada no Chromium:
+Em **24/10/2026**, a suíte completa foi executada no Chromium:
 
 ```text
-Running 5 tests using 5 workers
+Running 6 tests using 6 workers
 
-  ok 1 [chromium] › tests\home.spec.ts:3:5 › webapp deve estar online (586ms)
-  ok 2 [chromium] › tests\tasks.spec.ts:10:9 › cadastro › deve poder cadastrar uma nova tarefa (694ms)
-  ok 3 [chromium] › tests\tasks.spec.ts:51:9 › atualização › deve concluir uma tarefa (711ms)
-  ok 5 [chromium] › tests\tasks.spec.ts:35:9 › cadastro › deve validar o campo obrigatório (729ms)
-  ok 4 [chromium] › tests\tasks.spec.ts:22:9 › cadastro › não deve permitir tarefa duplicada (828ms)
+  ok 3 [chromium] › tests\home.spec.ts:3:5 › webapp deve estar online (588ms)
+  ok 6 [chromium] › tests\tasks.spec.ts:66:9 › exclusão › deve excluir uma tarefa (677ms)
+  ok 5 [chromium] › tests\tasks.spec.ts:51:9 › atualização › deve concluir uma tarefa (681ms)
+  ok 2 [chromium] › tests\tasks.spec.ts:22:9 › cadastro › não deve permitir tarefa duplicada (714ms)
+  ok 4 [chromium] › tests\tasks.spec.ts:35:9 › cadastro › deve validar o campo obrigatório (680ms)
+  ok 1 [chromium] › tests\tasks.spec.ts:10:9 › cadastro › deve poder cadastrar uma nova tarefa (746ms)
 
-  5 passed (1.8s)
+  6 passed (1.5s)
 ```
 
-- **5 de 5 cenários aprovados** em **1.8s**, com **zero falhas** e **zero flakiness**.
+- **6 de 6 cenários aprovados** em **1.5s**, com **zero falhas** e **zero flakiness**.
 - Execuções consecutivas confirmam que os helpers de API mantêm o banco sempre no estado esperado.
 - Ambiente validado com **Node.js 22.23.3** (runner + web) e **Node.js 18.20.8** (API + SQLite).
 
@@ -251,7 +286,7 @@ Running 5 tests using 5 workers
 
 | Camada | Tecnologias | Endereço local |
 | --- | --- | --- |
-| **Suíte de Automação** | Playwright Test `^1.63.0`, TypeScript (`strict: true`), Faker `^10.6.0` | `playwright-mark/` |
+| **Suíte de Automação** | Playwright Test `^1.63.0`, TypeScript (`strict: true`), dotenv `^18.0.9`, Faker `^10.6.0` | `playwright-mark/` |
 | **Front-end (SUT)** | SPA React compilada, servida via `http-server` | `http://localhost:8080` |
 | **API REST (SUT)** | Node.js, Express `4.17`, TypeORM, Yup, UUID | `http://localhost:3333/tasks` |
 | **Banco de Dados** | SQLite 3 (`better-sqlite3` `8.2.0`) | `apps/api/src/database/` |
@@ -288,10 +323,11 @@ QAx-Playwright/
     │   │   │       └── index.ts        # Page Object TasksPage
     │   │   └── helpers.ts              # Helpers de API (deleteTaskByHelper, postTask)
     │   ├── home.spec.ts                # Smoke test da página inicial
-    │   └── tasks.spec.ts               # Cenários de cadastro e atualização de tarefas
+    │   └── tasks.spec.ts               # Cenários de cadastro, atualização e exclusão de tarefas
+    ├── .env.example                    # Modelo das variáveis de ambiente (BASE_URL e BASE_API)
     ├── .node-version                   # Versão do Node.js do runner (22)
     ├── package.json
-    ├── playwright.config.ts            # Paralelismo, retries, reporter e trace
+    ├── playwright.config.ts            # baseURL via .env, paralelismo, retries, reporter e trace
     └── tsconfig.json                   # TypeScript com strict: true e resolveJsonModule
 ```
 
@@ -353,9 +389,17 @@ npm run dev
 cd playwright-mark
 fnm use 22.23.3
 npm ci
+Copy-Item .env.example .env
 npx playwright install chromium
 npm test
 ```
+
+> O arquivo `.env` define os endereços usados pela suíte. Ajuste os valores se a Web ou a API estiverem em outra porta ou ambiente:
+>
+> ```env
+> BASE_URL=http://localhost:8080
+> BASE_API=http://localhost:3333
+> ```
 
 Comandos úteis:
 
@@ -381,10 +425,10 @@ npx playwright show-report                # Abre o relatório HTML
 - [x] Agrupar cenários por funcionalidade com `test.describe`
 - [x] Massa de testes em *fixtures* JSON (`tasks.json`)
 - [x] Automatizar a conclusão (toggle) de tarefas pela interface
-- [ ] Automatizar a exclusão de tarefas pela interface
+- [x] Automatizar a exclusão de tarefas pela interface
+- [x] Centralizar URLs com `baseURL` e variáveis de ambiente (`.env`)
 - [ ] Usar hooks (`beforeEach`) para reduzir repetição entre cenários
 - [ ] Geração dinâmica de massa com Faker
-- [ ] Centralizar URLs com `baseURL` e variáveis de ambiente (`.env`)
 - [ ] Execução multi-browser (Chromium, Firefox, WebKit) e pipeline no **GitHub Actions**
 
 ---
