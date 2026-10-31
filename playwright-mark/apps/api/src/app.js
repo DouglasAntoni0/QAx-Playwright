@@ -11,7 +11,7 @@ require("express-async-errors");
 var database_1 = __importDefault(require("./database"));
 var routes_1 = require("./routes");
 var AppError_1 = require("./errors/AppError");
-database_1.default();
+exports.databaseReady = database_1.default();
 var app = express_1.default();
 exports.app = app;
 app.use(cors_1.default({ origin: '*' }));

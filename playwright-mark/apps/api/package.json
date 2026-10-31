@@ -6,10 +6,12 @@
   "author": "Fernando Papito",
   "license": "MIT",
   "scripts": {
+    "test": "jest --runInBand",
     "start": "node src/server.js",
     "dev": "node src/server.js",
     "typeorm": "node_modules/typeorm/cli.js",
     "db:init": "npx typeorm migration:run",
+    "db:init:test": "node scripts/init-test-db.cjs",
     "db:drop": "npx typeorm schema:drop"
   },
   "dependencies": {
@@ -23,5 +25,14 @@
     "typeorm": "0.2.31",
     "uuid": "8.3.2",
     "yup": "0.32.9"
+  },
+  "devDependencies": {
+    "jest": "29.7.0",
+    "supertest": "7.1.4"
+  },
+  "overrides": {
+    "yargonaut": {
+      "figlet": "1.8.2"
+    }
   }
 }

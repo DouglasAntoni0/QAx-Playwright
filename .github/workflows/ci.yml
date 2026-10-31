@@ -1,0 +1,117 @@
+name: CI - API e Playwright
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API - Jest e Supertest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: playwright-mark/apps/api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Node.js 18 para a API
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 18.20.8
+          cache: npm
+          cache-dependency-path: playwright-mark/apps/api/package-lock.json
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Executar todos os testes da API
+        run: |
+          mkdir -p test-results
+          npm test -- --ci --json --outputFile=test-results/api-results.json
+
+      - name: Guardar resultado da API
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: api-results-${{ github.run_attempt }}
+          path: playwright-mark/apps/api/test-results/
+          retention-days: 14
+
+  e2e:
+    name: E2E - Chromium
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: playwright-mark
+    env:
+      CI: 'true'
+      BASE_URL: http://localhost:8080
+      BASE_API: http://localhost:3333
+      PLAYWRIGHT_HTML_OPEN: never
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Node.js 18 para a API
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 18.20.8
+          cache: npm
+          cache-dependency-path: playwright-mark/apps/api/package-lock.json
+
+      - name: Instalar e iniciar a API com banco de teste
+        working-directory: playwright-mark/apps/api
+        run: |
+          npm ci
+          npm run db:init:test
+          mkdir -p ../../service-logs
+          NODE_ENV=test npm start > ../../service-logs/api.log 2>&1 &
+
+      - name: Node.js 22 para Web e Playwright
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.3
+          cache: npm
+          cache-dependency-path: |
+            playwright-mark/package-lock.json
+            playwright-mark/apps/web/package-lock.json
+
+      - name: Instalar dependências e Chromium
+        run: |
+          npm ci
+          npm ci --prefix apps/web
+          cp .env.example .env
+          npx playwright install --with-deps chromium
+
+      - name: Iniciar a Web
+        run: npm start --prefix apps/web > service-logs/web.log 2>&1 &
+
+      - name: Confirmar disponibilidade HTTP
+        run: node scripts/wait-for-services.cjs
+
+      - name: Executar todos os testes E2E
+        run: npm test
+
+      - name: Guardar relatórios e logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: e2e-results-${{ github.run_attempt }}
+          path: |
+            playwright-mark/playwright-report/
+            playwright-mark/test-results/
+            playwright-mark/service-logs/
+          retention-days: 14
