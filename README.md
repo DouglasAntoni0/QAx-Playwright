@@ -1,9 +1,10 @@
 <div align="center">
 
-# 🎭 QAx Playwright — Testes E2E do Mark L
+# 🎭 QAx Playwright — Automação E2E, API e Integração Contínua
 
 **Automação com Playwright e TypeScript desenvolvida por [Douglas Antonio](https://github.com/DouglasAntoni0).**
 
+[![CI](https://github.com/DouglasAntoni0/QAx-Playwright/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/DouglasAntoni0/QAx-Playwright/actions/workflows/ci.yml)
 [![Playwright](https://img.shields.io/badge/Playwright-1.63-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-22%20%7C%2018-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -13,25 +14,27 @@
 
 ## Sobre o projeto
 
-Este é meu projeto de estudo do curso **Playwright eXpress**, de Fernando Papito (QAx), com refatorações e documentação que evoluem conforme avanço nos estudos.
+Neste projeto, desenvolvo uma estratégia de automação que conecta **interface, API, persistência e integração contínua**. Meu trabalho vai da preparação dos dados à análise dos resultados: organizo os cenários, centralizo interações, verifico regras de negócio e automatizo a execução em um ambiente preparado pelo próprio pipeline.
 
-A aplicação usada nos testes é o **Mark L**, um gerenciador de tarefas com interface React compilada, API Express e banco SQLite. Meu trabalho de automação combina ações pela interface com preparação de dados via API, usando Page Object Model, massa em JSON e um contrato tipado para as tarefas.
+A base é o curso **Playwright eXpress**, de Fernando Papito (QAx). A partir dele, venho evoluindo o projeto de estudo com **Page Object Model, helpers de API, fixtures tipadas, hooks, isolamento de banco e GitHub Actions**. A aplicação testada é o **Mark L**, um gerenciador de tarefas com interface React compilada, API Express e SQLite.
 
-A suíte atual tem **seis cenários E2E no Chromium**. Os testes JavaScript legados incluídos na API são separados dessa suíte; sua situação está descrita em [Limites atuais](#limites-atuais).
+**Resultado verificado no GitHub Actions: 8 de 8 testes aprovados — 6 E2E no Chromium e 2 de integração da API.** [Consultar execução e artefatos](https://github.com/DouglasAntoni0/QAx-Playwright/actions/runs/41226988715).
 
-## Práticas aplicadas
+## O que meu trabalho demonstra
 
-| Prática | Implementação no projeto |
+| Competência aplicada | Evidência no projeto |
 | --- | --- |
-| Page Object Model | A classe [`TasksPage`](playwright-mark/tests/support/pages/tasks/index.ts) concentra os seletores, as ações e as asserções da tela de tarefas. |
-| Preparação via API | Os [`helpers`](playwright-mark/tests/support/helpers.ts) removem e cadastram tarefas por HTTP, verificando o sucesso da resposta antes de seguir para a UI. |
-| Inicialização compartilhada | O `test.beforeEach` instancia `TasksPage` com a página de cada teste, eliminando a repetição dos construtores nos cenários. |
-| Massa externa e tipagem | [`tasks.json`](playwright-mark/tests/fixtures/tasks.json) contém os dados dos cenários; [`TaskModel`](playwright-mark/tests/fixtures/task.model.ts) define `name` e `is_done`. |
-| Configuração por ambiente | `BASE_URL` configura a navegação e `BASE_API` configura os helpers. O `.env` é localizado pela pasta do arquivo de configuração, inclusive ao executar pela raiz no editor. |
-| Regras de negócio e formulário | Além do cadastro, os testes verificam duplicidade, campo obrigatório, conclusão e exclusão. |
-| Diagnóstico | O projeto configura relatório HTML e trace na primeira repetição. A API usa Node 18 para manter a compatibilidade com o módulo nativo SQLite deste ambiente. |
+| **Arquitetura de automação** | A classe [`TasksPage`](playwright-mark/tests/support/pages/tasks/index.ts) concentra seletores, ações e asserções; os cenários permanecem focados no comportamento esperado. |
+| **Estratégia híbrida de testes** | Os [`helpers de API`](playwright-mark/tests/support/helpers.ts) preparam os dados antes das ações pela interface, evitando usar a UI apenas para montar pré-condições. |
+| **Verificação de regras de negócio** | Cadastro, duplicidade, campo obrigatório, conclusão e exclusão são verificados por resultados observáveis, como mensagem, persistência, estilo e presença na lista. |
+| **Integração da API com persistência real** | Os testes com [`Jest e Supertest`](playwright-mark/apps/api/src/__tests__/Task.test.js) verificam HTTP 201, listagem do registro e rejeição de duplicidade com a mensagem correta, mantendo apenas uma tarefa persistida. |
+| **Controle de estado e isolamento** | Hooks inicializam o Page Object; os testes da API aguardam a conexão, aplicam migrations e limpam os dados de um banco exclusivo de testes. |
+| **Organização e tipagem** | [`tasks.json`](playwright-mark/tests/fixtures/tasks.json) separa massa e lógica; [`TaskModel`](playwright-mark/tests/fixtures/task.model.ts) define o contrato usado pela automação. |
+| **Integração contínua de ponta a ponta** | O [`workflow`](.github/workflows/ci.yml) instala dependências, prepara banco, inicia API e Web, verifica HTTP 200 e executa as duas suítes em jobs independentes. |
+| **Diagnóstico com evidências** | Relatórios HTML, JSON e JUnit, logs dos serviços e trace na primeira repetição ajudam a investigar falhas do CI. |
+| **Gestão de ambiente** | Separei Node 18 na API e Node 22 no runner/Web e corrigi o carregamento do `.env` para funcionar tanto no editor quanto no terminal. |
 
-O [`tsconfig.json`](playwright-mark/tsconfig.json) habilita `strict: true`, `resolveJsonModule` e `noEmit`. O comando `npm test` executa o Playwright; não há um script separado de verificação estática de tipos.
+Eu trato a automação como código que precisa ser entendido, executado e investigado por outra pessoa. Por isso, mantenho responsabilidades separadas, preparo explicitamente as pré-condições e publico evidências da execução junto ao pipeline.
 
 ## Arquitetura da suíte
 
@@ -66,29 +69,73 @@ Cada cenário com tarefa nomeada remove previamente o registro com aquele nome. 
 
 ## Cenários automatizados
 
-| Arquivo | Cenário | Verificação principal |
-| --- | --- | --- |
-| [`home.spec.ts`](playwright-mark/tests/home.spec.ts) | Aplicação online | Título `Gerencie suas tarefas com Mark L`. |
-| [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | Cadastro de tarefa | Nova tarefa visível na lista. |
-| `tasks.spec.ts` | Bloqueio de duplicidade | Modal com a mensagem `Task already exists!`. |
-| `tasks.spec.ts` | Campo obrigatório | Propriedade HTML `validationMessage` igual a `This is a required field`. |
-| `tasks.spec.ts` | Conclusão de tarefa | Estilo `text-decoration-line: line-through`. |
-| `tasks.spec.ts` | Exclusão de tarefa | Tarefa ausente da lista visível. |
+| Camada | Arquivo | Cenário | Verificação principal |
+| --- | --- | --- | --- |
+| E2E | [`home.spec.ts`](playwright-mark/tests/home.spec.ts) | Aplicação online | Título `Gerencie suas tarefas com Mark L`. |
+| E2E | [`tasks.spec.ts`](playwright-mark/tests/tasks.spec.ts) | Cadastro de tarefa | Nova tarefa visível na lista. |
+| E2E | `tasks.spec.ts` | Bloqueio de duplicidade | Modal com a mensagem `Task already exists!`. |
+| E2E | `tasks.spec.ts` | Campo obrigatório | Propriedade HTML `validationMessage` igual a `This is a required field`. |
+| E2E | `tasks.spec.ts` | Conclusão de tarefa | Estilo `text-decoration-line: line-through`. |
+| E2E | `tasks.spec.ts` | Exclusão de tarefa | Tarefa ausente da lista visível. |
+| API | [`Task.test.js`](playwright-mark/apps/api/src/__tests__/Task.test.js) | Cadastro com o contrato atual | HTTP 201 e tarefa encontrada na listagem com `is_done: false`. |
+| API | `Task.test.js` | Bloqueio de nome duplicado | Cadastro inicial válido, HTTP 400 na repetição, mensagem de duplicidade e um único registro persistido. |
 
 O projeto habilitado no [`playwright.config.ts`](playwright-mark/playwright.config.ts) é `chromium`, com o dispositivo `Desktop Chrome`. A configuração permite paralelismo; localmente não há retries. Quando `CI` está definido, são usados um worker, dois retries e bloqueio de `test.only`.
+
+## Integração contínua no GitHub Actions
+
+O [`ci.yml`](.github/workflows/ci.yml) roda a cada push na **`main`** e também permite execução manual pela aba Actions. O pipeline usa Ubuntu 24.04 e dois jobs independentes:
+
+```mermaid
+flowchart LR
+    P[Push na main ou execução manual] --> A[API: Node 18]
+    P --> E[E2E: Node 18 e Node 22]
+    A --> D[Migrations e banco de teste]
+    D --> J[Jest e Supertest: 2 testes]
+    J --> R[Resultado JSON]
+    E --> S[Iniciar API e Web]
+    S --> H[Confirmar HTTP 200]
+    H --> T[Chromium: 6 testes]
+    T --> F[HTML, JSON, JUnit e logs]
+```
+
+### Decisões que tornam o pipeline verificável
+
+- **Instalação pelos lockfiles:** cada pacote usa `npm ci`, com cache de download do npm.
+- **Runtime por responsabilidade:** Node 18.20.8 na API, compatível com `better-sqlite3`, e Node 22.23.3 na Web e no Playwright.
+- **Banco isolado:** os dois jobs usam `database.test.sqlite`. Os testes de API limpam os registros antes de cada caso e removem o schema ao terminar; o E2E inicializa seu próprio banco com as migrations da aplicação.
+- **Prontidão antes da execução:** o script [`wait-for-services.cjs`](playwright-mark/scripts/wait-for-services.cjs) exige HTTP 200 da listagem e da Web antes dos testes de interface.
+- **Asserções que distinguem a causa da falha:** a duplicidade na API exige um primeiro cadastro aprovado e a mensagem `Task already exists!`, evitando aceitar um HTTP 400 causado por payload inválido.
+- **Actions fixadas por SHA:** o workflow referencia revisões específicas das Actions e usa permissão de leitura do repositório.
+- **Evidências em caso de falha:** os passos de upload são executados mesmo quando um teste falha, desde que o run não tenha sido cancelado.
+
+### Relatórios disponíveis
+
+Na página de cada execução, a seção **Artifacts** contém arquivos com retenção de **14 dias**:
+
+| Artefato | Conteúdo |
+| --- | --- |
+| `api-results-<tentativa>` | Resultado JSON do Jest, com contagem e resultado dos testes da API. |
+| `e2e-results-<tentativa>` | Relatório HTML do Playwright, resultados JSON e JUnit, logs da API/Web e traces quando houver primeira repetição. |
+
+O relatório HTML pode ser consultado após baixar e extrair o artefato, usando `npx playwright show-report` com o caminho da pasta `playwright-report` extraída.
 
 ## Estrutura do repositório
 
 ```text
 QAx-Playwright/
+├── .github/workflows/ci.yml
 ├── README.md
 ├── Insomnia_markL.json
 └── playwright-mark/
     ├── apps/
     │   ├── api/
+    │   │   ├── jest.config.cjs
+    │   │   ├── jest.setup.cjs
     │   │   ├── ormconfig.json
+    │   │   ├── scripts/init-test-db.cjs
     │   │   └── src/
-    │   │       ├── __tests__/             # Testes legados da API
+    │   │       ├── __tests__/             # Integração com Jest e Supertest
     │   │       ├── controllers/
     │   │       ├── database/              # Conexão, migration e SQLite
     │   │       ├── errors/
@@ -98,6 +145,7 @@ QAx-Playwright/
     │   │       ├── routes.js
     │   │       └── server.js
     │   └── web/                          # Interface já compilada
+    ├── scripts/wait-for-services.cjs
     ├── tests/
     │   ├── fixtures/
     │   │   ├── task.model.ts
@@ -123,6 +171,7 @@ A pasta `apps/` contém a aplicação usada no curso. A interface é distribuíd
 | Runner Playwright | Node.js **22.23.3**, Playwright **1.63.0** e dotenv **18.0.9** | `playwright-mark/` |
 | Web | Node.js **22.23.3**, http-server **14.1.1** | `http://localhost:8080` |
 | API | Node.js **18.20.8**, Express **4.17.1**, TypeORM **0.2.31** e Yup **0.32.9** | `http://localhost:3333/tasks` |
+| Testes da API | Jest **29.7.0** e Supertest **7.1.4**, com Node.js **18.20.8** | `playwright-mark/apps/api/` |
 | Banco | better-sqlite3 **8.2.0** | `playwright-mark/apps/api/src/database/database.sqlite` |
 
 A [`.node-version`](playwright-mark/.node-version) define Node **22** para o runner. A API usa Node **18.20.8** neste ambiente por causa da compatibilidade do binário nativo `better-sqlite3`.
@@ -225,18 +274,36 @@ npx playwright show-report              # Relatório HTML da última execução
 
 Os serviços devem estar ativos antes dos testes: não há inicialização automática por `webServer`. A pasta `playwright-report/` é gerada localmente e ignorada pelo Git.
 
+No GitHub Actions, o próprio workflow inicia os serviços antes da suíte E2E.
+
 `BASE_API` altera o endereço usado pelos helpers. A interface compilada contém seu próprio endereço `http://localhost:3333`; mudar o `.env` da suíte não reconfigura esse bundle.
+
+### 4. Testes de integração da API
+
+Partindo da raiz do repositório:
+
+```powershell
+cd playwright-mark/apps/api
+fnm use 18.20.8
+npm ci
+npm test
+```
+
+O Supertest carrega a aplicação Express diretamente; não é necessário iniciar o servidor da porta 3333 para essa suíte. O setup do Jest define `NODE_ENV=test`, e a aplicação usa `src/database/database.test.sqlite`, ignorado pelo Git. Os testes aguardam `databaseReady` antes de aplicar as migrations e fazer as requisições.
+
+O script `npm run db:init:test` prepara esse mesmo tipo de banco para o servidor usado no job E2E. A dependência transitiva `figlet` está fixada em 1.8.2 no pacote da API para manter a compatibilidade da ferramenta de linha de comando do TypeORM com Node 18.
 
 ## Resultados de execução
 
-Validação local em **25/10/2026**, com API e Web respondendo **HTTP 200**:
+Validação no **GitHub Actions em 31/10/2026**, com ambos os jobs concluídos com sucesso:
 
-| Execução | Node.js | Resultado | Tempo |
+| Suíte | Resultado | Falhas | Ignorados |
 | --- | --- | --- | --- |
-| Suíte Chromium pela raiz do repositório | 22.23.3 | 6 de 6 aprovados | 5,8 s |
-| `npm test` dentro de `playwright-mark` | 22.23.3 | 6 de 6 aprovados | 2,0 s |
+| Integração da API — Jest e Supertest | **2/2 aprovados** | 0 | 0 |
+| E2E — Playwright e Chromium | **6/6 aprovados** | 0 | 0 |
+| **Total** | **8/8 aprovados** | **0** | **0** |
 
-As duas formas de execução carregam o mesmo `.env`. Esses resultados registram as execuções realizadas; não representam uma medição contínua de flakiness ou de desempenho.
+**Evidência:** [execução 41226988715](https://github.com/DouglasAntoni0/QAx-Playwright/actions/runs/41226988715), commit [`bfd981d`](https://github.com/DouglasAntoni0/QAx-Playwright/commit/bfd981dec5ff1706b10597147ec4ca1b5c457443). As contagens foram conferidas nos arquivos JSON publicados como artefatos. Nessa execução, o Playwright registrou também **zero casos flaky**; esse dado descreve o run verificado, não uma garantia para execuções futuras.
 
 ## Rotas da API
 
@@ -262,13 +329,12 @@ A coleção [`Insomnia_markL.json`](Insomnia_markL.json) contém chamadas de cad
 | `ERR_DLOPEN_FAILED` ao iniciar a API | Confirme Node 18.20.8 no terminal da API e a compatibilidade da instalação de `better-sqlite3`. |
 | `Cannot GET /` na porta 3333 | A API não possui rota raiz; a listagem fica em `/tasks`. |
 
-## Limites atuais
+## Escopo atual e evolução
 
-- O `npm test` executa somente os seis cenários em `playwright-mark/tests/`, no Chromium. Firefox e WebKit aparecem como exemplos comentados na configuração.
-- Não há workflow do GitHub Actions versionado; os resultados acima são locais.
+- O `npm test` em `playwright-mark` executa os seis E2E no Chromium; em `apps/api`, executa os dois testes de integração. O CI executa ambos os comandos em seus respectivos pacotes.
+- Firefox e WebKit aparecem como exemplos comentados na configuração e ainda não integram o pipeline.
 - Faker está instalado como dependência de desenvolvimento, mas os cenários atuais usam os dados estáticos de `tasks.json`.
-- Os testes legados em [`apps/api/src/__tests__/Task.test.js`](playwright-mark/apps/api/src/__tests__/Task.test.js) usam Jest e Supertest, que não estão declarados no pacote da API. Não há script de teste configurado nesse pacote.
-- Na execução separada desses dois testes legados em 25/10/2026, com dependências temporárias e `NODE_ENV=test`, um passou e um falhou. O cadastro omite `is_done` e recebe HTTP 400 em vez de 201. O caso de duplicidade aceita esse mesmo 400 sem comprovar que houve duplicidade. Eles precisam ser atualizados antes de compor uma suíte de API confiável.
+- O [`tsconfig.json`](playwright-mark/tsconfig.json) habilita `strict: true`, `resolveJsonModule` e `noEmit`; ainda não há um script dedicado de verificação estática de tipos.
 
 ## Próximos estudos
 
@@ -279,9 +345,11 @@ A coleção [`Insomnia_markL.json`](Insomnia_markL.json) contém chamadas de cad
 - [x] Carregamento do `.env` independente da pasta de execução.
 - [ ] Geração de massa dinâmica com Faker.
 - [ ] Evolução dos seletores da interface.
-- [ ] Atualização dos testes legados e configuração de um runner para a API.
+- [x] Atualização do contrato e das asserções dos testes de API, com Jest e Supertest declarados.
+- [x] Pipeline com testes de API e E2E no GitHub Actions.
+- [x] Relatórios e logs publicados como artefatos do CI.
 - [ ] Execução em Firefox e WebKit.
-- [ ] Pipeline de testes no GitHub Actions.
+- [ ] Verificação estática de tipos no pipeline.
 
 ## Autor e referência
 
