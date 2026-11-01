@@ -4,6 +4,8 @@
 
 **Automação com Playwright e TypeScript desenvolvida por [Douglas Antonio](https://github.com/DouglasAntoni0).**
 
+**Status: projeto de estudo concluído.**
+
 [![CI](https://github.com/DouglasAntoni0/QAx-Playwright/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/DouglasAntoni0/QAx-Playwright/actions/workflows/ci.yml)
 [![Playwright](https://img.shields.io/badge/Playwright-1.63-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -14,9 +16,9 @@
 
 ## Sobre o projeto
 
-Neste projeto, desenvolvo uma estratégia de automação que conecta **interface, API, persistência e integração contínua**. Meu trabalho vai da preparação dos dados à análise dos resultados: organizo os cenários, centralizo interações, verifico regras de negócio e automatizo a execução em um ambiente preparado pelo próprio pipeline.
+Neste projeto, desenvolvi uma estratégia de automação que conecta **interface, API, persistência e integração contínua**. Atuei da preparação dos dados à análise dos resultados: organizei os cenários, centralizei interações, verifiquei regras de negócio e automatizei a execução em um ambiente preparado pelo próprio pipeline.
 
-A base é o curso **Playwright eXpress**, de Fernando Papito (QAx). A partir dele, venho evoluindo o projeto de estudo com **Page Object Model, helpers de API, fixtures tipadas, hooks, isolamento de banco e GitHub Actions**. A aplicação testada é o **Mark L**, um gerenciador de tarefas com interface React compilada, API Express e SQLite.
+A base foi o curso **Playwright eXpress**, de Fernando Papito (QAx). Consolidei o estudo em uma entrega com **Page Object Model, helpers de API, fixtures tipadas, hooks, isolamento de banco e GitHub Actions**. A aplicação testada é o **Mark L**, um gerenciador de tarefas com interface React compilada, API Express e SQLite.
 
 **Resultado verificado no GitHub Actions: 8 de 8 testes aprovados — 6 E2E no Chromium e 2 de integração da API.** [Consultar execução e artefatos](https://github.com/DouglasAntoni0/QAx-Playwright/actions/runs/41226988715).
 
@@ -329,30 +331,26 @@ A coleção [`Insomnia_markL.json`](Insomnia_markL.json) contém chamadas de cad
 | `ERR_DLOPEN_FAILED` ao iniciar a API | Confirme Node 18.20.8 no terminal da API e a compatibilidade da instalação de `better-sqlite3`. |
 | `Cannot GET /` na porta 3333 | A API não possui rota raiz; a listagem fica em `/tasks`. |
 
-## Escopo atual e evolução
+## Escopo entregue
 
 - O `npm test` em `playwright-mark` executa os seis E2E no Chromium; em `apps/api`, executa os dois testes de integração. O CI executa ambos os comandos em seus respectivos pacotes.
-- Firefox e WebKit aparecem como exemplos comentados na configuração e ainda não integram o pipeline.
+- O pipeline entregue valida o Chromium. Firefox e WebKit aparecem apenas como exemplos comentados na configuração.
 - Faker está instalado como dependência de desenvolvimento, mas os cenários atuais usam os dados estáticos de `tasks.json`.
-- O [`tsconfig.json`](playwright-mark/tsconfig.json) habilita `strict: true`, `resolveJsonModule` e `noEmit`; ainda não há um script dedicado de verificação estática de tipos.
+- O [`tsconfig.json`](playwright-mark/tsconfig.json) habilita `strict: true`, `resolveJsonModule` e `noEmit`. A verificação estática de tipos não integra o pipeline entregue.
 
-## Próximos estudos
+## Entregas concluídas
 
 - [x] Page Object Model e helpers de API.
 - [x] Massa em JSON e contrato `TaskModel`.
 - [x] Cadastro, duplicidade, campo obrigatório, conclusão e exclusão.
 - [x] Inicialização de `TasksPage` no `beforeEach`.
 - [x] Carregamento do `.env` independente da pasta de execução.
-- [ ] Geração de massa dinâmica com Faker.
-- [ ] Evolução dos seletores da interface.
 - [x] Atualização do contrato e das asserções dos testes de API, com Jest e Supertest declarados.
 - [x] Pipeline com testes de API e E2E no GitHub Actions.
 - [x] Relatórios e logs publicados como artefatos do CI.
-- [ ] Execução em Firefox e WebKit.
-- [ ] Verificação estática de tipos no pipeline.
 
 ## Autor e referência
 
 **Douglas Antonio** — [GitHub](https://github.com/DouglasAntoni0).
 
-Curso de referência: [Playwright eXpress](https://www.udemy.com/course/playwright-express/), de **Fernando Papito (QAx)**. A automação, as refatorações de suporte e a documentação deste repositório acompanham minha evolução prática nos estudos.
+Curso de referência: [Playwright eXpress](https://www.udemy.com/course/playwright-express/), de **Fernando Papito (QAx)**. A automação, as refatorações de suporte e a documentação deste repositório consolidam os conhecimentos aplicados neste projeto de estudo concluído.
